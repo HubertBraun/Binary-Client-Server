@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,8 +21,21 @@ namespace Binary_Client_Server
 {
     abstract class Host
     {
-        private const int portNum = 27015;
+        protected byte[] data;
+        protected TcpClient client;
+        protected const int portNum = 27015;
         protected IPAddress _IP;
-        abstract public bool Exit();
+        NetworkStream ns;
+
+        public void CreateStream() => ns = client.GetStream();
+        public void Read(ref byte[] buffer) => ns.Read(buffer, 0, buffer.Length);
+        public void Write(ref byte[] buffer) => ns.Write(buffer, 0, buffer.Length);
+
+
+        public void Exit()
+        {
+            ns.Close();
+            client.Close();
+        }
     }
 }
