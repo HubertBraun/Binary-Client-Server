@@ -17,29 +17,31 @@ namespace Binary_Client_Server
 
         static string ReadBuffer(byte[] buffer)
         {
-            string temp = " ";
+            string tempString = " ";
+            int tempInt;
             string[] signs = new string[]{"0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"};
             for (int i=0; i<buffer.Length; i++)
             {
-                temp += signs[buffer[i]];
+                tempInt = buffer[i] >> 4;
+                tempString += signs[tempInt];
+                tempInt = buffer[i] & 0xF;
+                tempString += signs[tempInt] + " ";
             }
 
-            return temp;
+            return tempString;
         }
-
-
 
         static private void ClientTest(ref Client c)
         {
-            
-            c.buffer = new byte[8];
+            Console.WriteLine("Server");
 
+            c.buffer = new byte[8];
             c.Createclient();
             c.CreateStream();
             Console.WriteLine("Connected");
             for (int i = 0; i < c.buffer.Length; i++)
             {
-                c.buffer[i] = 0x0;
+                c.buffer[i] = 0x00;
             }
             c.Write(ref c.buffer);
             Console.WriteLine("Message sended: {0}", ReadBuffer(c.buffer));
@@ -50,6 +52,7 @@ namespace Binary_Client_Server
 
         static private void ServerTest(ref Server s)
         {
+            Console.WriteLine("Client");
             s.buffer = new byte[8];
             Console.WriteLine("Waiting for connection");
             s.CreateListener();
@@ -62,9 +65,10 @@ namespace Binary_Client_Server
             Console.WriteLine("Message received: {0}", ReadBuffer(s.buffer));
             for (int i = 0; i < s.buffer.Length; i++)
             {
-                s.buffer[i] = 0xF;
+                s.buffer[i] = 0xF0;
             }
             s.Write(ref s.buffer);
+            Console.WriteLine("Message sended: {0}", ReadBuffer(s.buffer));
             s.Exit();
         }
 
