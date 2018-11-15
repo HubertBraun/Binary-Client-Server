@@ -21,7 +21,7 @@ namespace Binary_Client_Server
 {
     abstract class Host
     {
-        protected byte[] data;
+        public byte[] buffer;
         protected TcpClient client;
         protected const int portNum = 27015;
         protected IPAddress _IP;
@@ -34,8 +34,10 @@ namespace Binary_Client_Server
 
         public void Exit()
         {
-            ns.Close();
-            client.Close();
+            if(ns!=null)
+                ns.Close();
+            if (client != null)
+                client.Close();
         }
     }
 }
