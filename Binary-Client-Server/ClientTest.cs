@@ -8,36 +8,40 @@ namespace Binary_Client_Server
 {
     class ClientTest : BufferUtilites
     {
-        private static void Main(string[] args)
+        private static void Main(string[] args)     // metoda do sprawdzania dzialania klienta
         {
-            Client c = new Client();
-            string UserInput;
-            
+
+            Client c = new Client();        // utworzenie obiektu klienta (bezargumentowo do testow)
             try
             {
-                Console.WriteLine("Client");
+                Console.WriteLine("Client");    // informacja o utworzeniu obiektu klienta
+                c.Createclient();               // utworzenie klienta, port 27015
+                c.CreateStream();               // utworzenie strumienia z serwerem
+                Console.WriteLine("Connected"); // informacja o polaczeniu
 
-                c.Createclient();
-                c.CreateStream();
-                Console.WriteLine("Connected");
-                UserInput = Console.ReadLine();
-                c.buffer = new byte[UserInput.Length];
+                string UserInput = Console.ReadLine();  //wczytanie danych do wyslania
+
+                //TODO: wczytywanie dwoch liczb, zapisanie ich do BitArray[] 
+                //TODO: oraz przeksztalcenie do postaci binarnej
+
+                c.buffer = new byte[UserInput.Length];  // ustalenie wielkosci bufora
+                //TODO: wielkosc bufora zalezna od wielkosci wpisanych przez uzytkownika zmiennych
                 
-                for (int i = 0; i < UserInput.Length; i++)
+                for (int i = 0; i < UserInput.Length; i++)  // wpisyawnie do bufora
                     c.buffer[i] = Convert.ToByte(UserInput.ElementAt(i));
                 
-                c.Write(ref c.buffer);
+                c.Write(ref c.buffer);  // wysylanie
                 Console.WriteLine("Message sended: {0}", ReadMessage(c.buffer));
-                c.Read(ref c.buffer);
+                c.Read(ref c.buffer);   // odbieranie
                 Console.WriteLine("Message received: {0}", ReadMessage(c.buffer));
-                c.Exit();
+                c.Exit();   // bezpieczne zakonczenie polaczenia
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                c.Exit();
+                c.Exit();   // awaryjne zakonczenie polaczenia
             }
-            Console.ReadKey();
+            Console.ReadKey();  // zamykanie aplikacji przez wcisniecie dowolnego przycisku
         }
     }
 }
