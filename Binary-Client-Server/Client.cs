@@ -19,6 +19,7 @@ namespace Binary_Client_Server
             {
                 _IP = System.Net.IPAddress.Parse(args[0]);
                 Console.WriteLine("Adres IP Servera: {0}", _IP);
+
             }
             else
             {

@@ -24,10 +24,6 @@ namespace Binary_Client_Server
 
                 s.Read(ref s.buffer);
                 Console.WriteLine("Message received: {0}", ReadMessage(s.buffer));
-                for (int i = 0; i < s.buffer.Length; i++)
-                {
-                    s.buffer[i] = 0xF0;
-                }
                 s.Write(ref s.buffer);
                 Console.WriteLine("Message sended: {0}", ReadMessage(s.buffer));
                 s.Exit();

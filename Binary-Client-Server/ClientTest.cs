@@ -11,17 +11,21 @@ namespace Binary_Client_Server
         private static void Main(string[] args)
         {
             Client c = new Client();
+            string UserInput;
+            
             try
             {
                 Console.WriteLine("Client");
-                c.buffer = new byte[8];
+
                 c.Createclient();
                 c.CreateStream();
                 Console.WriteLine("Connected");
-                for (int i = 0; i < c.buffer.Length; i++)
-                {
-                    c.buffer[i] = 0x00;
-                }
+                UserInput = Console.ReadLine();
+                c.buffer = new byte[UserInput.Length];
+                
+                for (int i = 0; i < UserInput.Length; i++)
+                    c.buffer[i] = Convert.ToByte(UserInput.ElementAt(i));
+                
                 c.Write(ref c.buffer);
                 Console.WriteLine("Message sended: {0}", ReadMessage(c.buffer));
                 c.Read(ref c.buffer);
