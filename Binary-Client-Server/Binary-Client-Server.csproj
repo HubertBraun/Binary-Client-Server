@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BinaryMinimalizer.cs" />
     <Compile Include="BufferUtilites.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="ClientTest.cs" />

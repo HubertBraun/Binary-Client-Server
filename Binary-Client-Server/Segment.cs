@@ -38,101 +38,50 @@ namespace Binary_Client_Server
         overflow = 0b0001,//przekroczenie zakresu
         notallowed = 0b0010,//niedozwolona operacja np. dzielenie przez zero
         //notdefined = 0b0100
-
+        
     }
     #endregion
 
     public class Segment
     {
-        private int arg_1;//liczba1
-        private int arg_2;//liczba2
-        private Operation operation;//pole operacji
-        private Status status;//pole statusu
-        private string data_length;//dlugosc pola danych
-        private BitArray dynamic_data;//pole danych o dymanicznym rozmiarze
+        private BitArray _arg_1;//liczba1
+        private BitArray _arg_2;//liczba2
+        private Operation _operation;//pole operacji
+        private Status _status;//pole statusu
+        private BitArray _data_length;//dlugosc pola danych
+        private BitArray _dynamic_data;//pole danych o dymanicznym rozmiarze
 
+        
 
-        private BitArray bitAR;
+        private byte[] _bitAR;
 
+ 
         public Segment(byte[] buffer)
         {
-            bitAR = new BitArray(buffer);
+            _bitAR = buffer;
         }
 
+        private int CalculateSegmentSize() { return 7 + _arg_1.Length + _arg_2.Length + _data_length.Length + _dynamic_data.Length; }
 
-
-
-
-
-
-
-
-
-
-
-        public void Serialize()
+        public void createBuffer(int a, int b, Operation o, Status s)
         {
-            Add(operation);
-            Add(arg_1);
-            Add(arg_2);
-            Add(status);
-            
-        }
+            //SSSS OOO DATA32PTR DATA 
+            BinaryMinimalizer bm = new BinaryMinimalizer();
+            _arg_1 = bm.ReturnMinimalizedTable(a);//zminimalizowanie i zamiana liczb na ciag bitow
+            _arg_2 = bm.ReturnMinimalizedTable(b);
+            _data_length = bm.change(new BitArray(new int[] { _arg_1.Length + _arg_2.Length}));//minimalizacja bitow ptr
+            _operation = o;//przypisanie pol
+            _status = s;
 
-        int index = 0;
-        int byteIndex = 0;
-        private void Add(bool value) //serialization of bool value
-        {
-            if (index % 8 == 0)
-            {
-                byteIndex++;
-                index = byteIndex * 8;
-            }
-            index--;//tu chyba powinno byc if(index == 0) index = 0;
-            bitAR.Set(index, value);
-        }
+            _bitAR  = new byte[CalculateSegmentSize()];//tworzenie tablicy bufera o zadanej dlugosci
 
-        private void Add(byte value) //serialization of byte value
-        {
-            for (int i = 7; i >= 0; i--)
-            {
-                this.Add((value & (1 << i)) != 0);
-            }
-        }
 
-        private void Add(Operation op) //serialization of Operation
-        {
-            foreach (byte by in BitConverter.GetBytes((int)op))
-            {
-                for (int i = 2; i >= 0; i--)
-                {
-                    this.Add((by & (1 << i)) != 0);
-                }
-                break;
-            }
-        }
+            bm.change(new BitArray(new int[] {(Int32)_status })).CopyTo(_bitAR, 0);//zmiana enum na bity
+            bm.change(new BitArray(new int[] { (Int32)_operation })).CopyTo(_bitAR, 3);
+            _data_length.CopyTo(_bitAR, 7);//przypisywanie do tablicy kolejno
+            _arg_1.CopyTo(_bitAR, 39);
+            _arg_2.CopyTo(_bitAR, 39 + _arg_1.Length);
 
-   
-
-        private void Add(Status st) //serialization of state
-        {
-            foreach (byte by in BitConverter.GetBytes((int)st))
-            {
-                for (int i = 1; i >= 0; i--)
-                {
-                    this.Add((by & (1 << i)) != 0);
-                }
-                break;
-            }
-        }
-
-        private void Add(int value) //serialization of int32
-        {
-            byte[] binary = BitConverter.GetBytes(value);
-            foreach (byte by in binary.Reverse())
-            {
-                Add(by);
-            }
         }
 
 
@@ -140,48 +89,6 @@ namespace Binary_Client_Server
 
 
 
-        public void Deserialize()
-        {
-            operation = (Operation)GetInt(3);
-            arg_1 = GetInt(32);
-            arg_2 = GetInt(32);
-            status = (Status)GetInt(4);
-        }
-
-        private int GetInt(int length) //deserialize int32 and add to bitarray
-        {
-            var result = new int[1];
-            BitArray tmp = new BitArray(32, false);
-            for (int i = length - 1; i >= 0; i--)
-            {
-                tmp[i] = getBit();
-            }
-            tmp.CopyTo(result, 0);
-            return result[0];
-        }
-
-        private bool getBit() //getter of last bit in bitarray
-        {
-            if (index % 8 == 0)
-            {
-                byteIndex++;
-                index = byteIndex * 8;
-            }
-            index--;
-            return bitAR[index];
-        }
-
-
-
-
-
-        public byte[] GetBytes() //function that returns byte array with serialized bitarray
-        {
-            this.Serialize();
-            byte[] binary = new byte[(bitAR.Length - 1) / 8 + 1];
-            bitAR.CopyTo(binary, 0);
-            return binary;
-        }
 
     }
 
