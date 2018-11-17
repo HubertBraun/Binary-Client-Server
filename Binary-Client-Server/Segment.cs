@@ -50,6 +50,7 @@ namespace Binary_Client_Server
         private Status _status;//pole statusu
         private BitArray _data_length;//dlugosc pola danych
         private BitArray _dynamic_data;//pole danych o dymanicznym rozmiarze
+        private BitArray _ptrto_arg1_size;
 
         
 
@@ -72,6 +73,7 @@ namespace Binary_Client_Server
             _data_length = bm.change(new BitArray(new int[] { _arg_1.Length + _arg_2.Length}));//minimalizacja bitow ptr
             _operation = o;//przypisanie pol
             _status = s;
+            _ptrto_arg1_size = bm.change(new BitArray(new int[] { _arg_1.Length + _arg_2.Length }));
 
             _bitAR  = new byte[CalculateSegmentSize()];//tworzenie tablicy bufera o zadanej dlugosci
 
@@ -79,11 +81,29 @@ namespace Binary_Client_Server
             bm.change(new BitArray(new int[] {(Int32)_status })).CopyTo(_bitAR, 0);//zmiana enum na bity
             bm.change(new BitArray(new int[] { (Int32)_operation })).CopyTo(_bitAR, 3);
             _data_length.CopyTo(_bitAR, 7);//przypisywanie do tablicy kolejno
-            _arg_1.CopyTo(_bitAR, 39);
-            _arg_2.CopyTo(_bitAR, 39 + _arg_1.Length);
+            _ptrto_arg1_size.CopyTo(_bitAR, 39);
+            _arg_1.CopyTo(_bitAR, 71);
+            _arg_2.CopyTo(_bitAR, 71 + _arg_1.Length);
 
         }
 
+
+        public string[] Encoding()//zwracanie tablicy stringow po enkodowaniu
+        {
+            string ar = _bitAR.ToString();
+            string[] toReturn = new string[4];
+            toReturn[0] = ar.Substring(0, 3);//stan
+            toReturn[1] = ar.Substring(3, 4);//operacja
+            toReturn[2] = ar.Substring(7, 32);//dlugosc danych
+            toReturn[3] = ar.Substring(39, 32);//wskaznik danych arg1
+            int index_ptr = 0; int length_value = 0;//dl liczby1 ; dl liczby 1 i 2
+            Int32.TryParse(toReturn[3], out index_ptr); Int32.TryParse(toReturn[2], out length_value);
+            toReturn[4] = ar.Substring(71,index_ptr);//liczba1
+            toReturn[5] = ar.Substring(71 + index_ptr, length_value - index_ptr);//liczba2
+
+            return toReturn;
+            
+        }
 
 
 
