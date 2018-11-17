@@ -51,6 +51,7 @@
     <Compile Include="ClientTest.cs" />
     <Compile Include="Host.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Segment.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="ServerTest.cs" />
   </ItemGroup>

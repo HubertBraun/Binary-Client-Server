@@ -6,16 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-//TODO: impelentacja protokolu
-// POLA OPERACJI                        POLA STATUSU            POLE DLUGOSCI DANYCH(32 bity)       POLE DANYCH
-// 000 - dodawanie						0000                    0x00000002 - 2 zmienne po 1 bicie   zmienna dlugosc                      -							
-// 001 - odejmowanie				    0001                    -                                   
-// 010 - mnozenie						0010                    -                                   
-// 011 - dzielenie                      0011                    -                                   
-// 100 - AND                            0100                    -                                   
-// 101 - OR                             0101                    -                                   
-// 110 - przesuniecie bitowe w prawo	0110                    -                                   
-// 111 - przesuniecie bitowe w lewo	    0111                    0xFFFFFFFF - 2 zmienne po 2^31                     -
+       
 
 namespace Binary_Client_Server
 {
