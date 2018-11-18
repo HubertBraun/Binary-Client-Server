@@ -14,8 +14,8 @@ using System.Threading.Tasks;
 // 011 - dzielenie                      0011                    -                                   
 // 100 - AND                            0100                    -                                   
 // 101 - OR                             0101                    -                                   
-// 110 - porównywanie	0110                    -                                   
-// 111 - potęgowanie   0111                    0xFFFFFFFF - 2 zmienne po 2^31             
+// 110 - porównywanie	                0110            -                                   
+// 111 - potęgowanie                    0111             0xFFFFFFFF - 2 zmienne po 2^31             
 namespace Binary_Client_Server
 {
     #region enum
@@ -148,9 +148,10 @@ namespace Binary_Client_Server
             toReturn[1] = ar.Substring(3, 4);//operacja
             toReturn[2] = ar.Substring(7, 32);//dlugosc danych
             toReturn[3] = ar.Substring(39, 32);//wskaznik danych arg1
-            int index_ptr = 0; int length_value = 0;//dl liczby1 ; dl liczby 1 i 2
-            Int32.TryParse(toReturn[3], out index_ptr); Int32.TryParse(toReturn[2], out length_value);
-            toReturn[4] = ar.Substring(71, index_ptr);//liczba1
+            int index_ptr = 0, length_value = 0;//dl liczby1 ; dl liczby 1 i 2
+            index_ptr = Convert.ToInt32(toReturn[3], 2);
+            length_value = Convert.ToInt32(toReturn[4], 2);
+            toReturn[4] = ar.Substring(71, 5);//liczba1
             toReturn[5] = ar.Substring(71 + index_ptr, length_value - index_ptr);//liczba2
 
 
