@@ -13,7 +13,7 @@ namespace Binary_Client_Server
 
         private static void Main()
         {
-
+            
             try
             {
 
@@ -23,11 +23,8 @@ namespace Binary_Client_Server
                     Segment s = new Segment(Regex.Split(UserInput, "\\s+"));
                     string[] seg = s.Encoding();
 
-                    foreach (string str in seg)
-                    {
-                        Console.Write(str);
-                    }
-                    Console.WriteLine();
+                   
+                    foreach (var b in seg) Console.WriteLine(b);
                 }
                 }
             catch (Exception e)

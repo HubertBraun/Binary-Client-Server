@@ -49,12 +49,11 @@ namespace Binary_Client_Server
         private Operation _operation;//pole operacji
         private Status _status;//pole statusu
         private BitArray _data_length;//dlugosc pola danych
-        private BitArray _dynamic_data;//pole danych o dymanicznym rozmiarze
         private BitArray _ptrto_arg1_size;
 
 
 
-        private BitArray _bitAR;
+        public BitArray _bitAR;
 
         public Segment(byte[] buffer)
         {
@@ -106,7 +105,7 @@ namespace Binary_Client_Server
 
         }
 
-        private int CalculateSegmentSize() { return 7 + _arg_1.Length + _arg_2.Length + _data_length.Length + _dynamic_data.Length + _ptrto_arg1_size.Length; }
+        private int CalculateSegmentSize() { return 7 + _arg_1.Length + _arg_2.Length + _data_length.Length + _ptrto_arg1_size.Length; }
 
         public void CreateBuffer(int a, int b, Operation o, Status s)
         {
@@ -117,27 +116,33 @@ namespace Binary_Client_Server
             _data_length = BinaryMinimalizer.Change(new BitArray(new int[] { _arg_1.Length + _arg_2.Length}));//minimalizacja bitow ptr
             _operation = o;//przypisanie pol
             _status = s;
-            _ptrto_arg1_size = BinaryMinimalizer.Change(new BitArray(new int[] { _arg_1.Length + _arg_2.Length }));
+            _ptrto_arg1_size = BinaryMinimalizer.Change(new BitArray(new int[] { _arg_1.Length }));
 
             
-            //zamina BitArray na string
+            //zamina BitArray na string 
             string bufer ="";
-            bufer += BinaryMinimalizer.Change(new BitArray(new int[] { (Int32)_status })).ToDigitString();//zmiana enum na bity
-            bufer += BinaryMinimalizer.Change(new BitArray(new int[] { (Int32)_operation })).ToDigitString();
+            //zmiana enum na bity
+            bufer += BinaryMinimalizer.ReturnMinimalizedTable((Int32)_status).ToDigitString();
+            bufer += BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt16(_operation)).ToDigitString();
+            bufer += BinaryMinimalizer.Change(new BitArray(new int[] { Convert.ToInt16(_operation) })).ToDigitString();
             bufer += _data_length.ToDigitString();
             bufer += _ptrto_arg1_size.ToDigitString();
             bufer += _arg_1.ToDigitString();
             bufer += _arg_2.ToDigitString();
             //zamina string na bitarray
             var temp = new BitArray(bufer.Select(c => c == '1').ToArray());
-            _bitAR = temp;
+            _bitAR = new BitArray(temp.Count);
+            for(int i  = 0;i<temp.Count;i++)
+            _bitAR[i] = temp[i];
 
         }
 
 
         public string[] Encoding()//zwracanie tablicy stringow po enkodowaniu
         {
-            string ar = _bitAR.ToDigitString();
+
+            var temp = new BitArray(_bitAR);
+            string ar = temp.ToDigitString();
             string[] toReturn = new string[6];
             toReturn[0] = ar.Substring(0, 3);//stan
             toReturn[1] = ar.Substring(3, 4);//operacja
@@ -145,8 +150,19 @@ namespace Binary_Client_Server
             toReturn[3] = ar.Substring(39, 32);//wskaznik danych arg1
             int index_ptr = 0; int length_value = 0;//dl liczby1 ; dl liczby 1 i 2
             Int32.TryParse(toReturn[3], out index_ptr); Int32.TryParse(toReturn[2], out length_value);
-            toReturn[4] = ar.Substring(71,index_ptr);//liczba1
+            toReturn[4] = ar.Substring(71, index_ptr);//liczba1
             toReturn[5] = ar.Substring(71 + index_ptr, length_value - index_ptr);//liczba2
+
+
+            //for (int i = 0; i < temp.Count; i++)
+            //{
+            //    if (i < 3) toReturn[0] += Convert.ToInt16(temp.Get(i));
+            //    if (i >= 3 && i < 7) toReturn[1] += Convert.ToInt16(temp.Get(i));
+            //    if (i >= 7 && i < 39) toReturn[2] += Convert.ToInt16(temp.Get(i));
+            //    if (i >= 39 && i < 71) toReturn[3] += Convert.ToInt16(temp.Get(i));
+            //    if (i >= 71 && i < 71 + index_ptr) toReturn[4] += Convert.ToInt16(temp.Get(i));
+            //    if (i >= 71 + index_ptr && i < 71 + length_value) toReturn[5] += Convert.ToInt16(temp.Get(i));
+            //}
 
             return toReturn;
             
