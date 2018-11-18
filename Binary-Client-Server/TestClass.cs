@@ -22,9 +22,17 @@ namespace Binary_Client_Server
                     string UserInput = Console.ReadLine();  //wczytanie danych do wyslania
                     Segment s = new Segment(Regex.Split(UserInput, "\\s+"));
                     string[] seg = s.Encoding();
-
-                   
-                    foreach (var b in seg) Console.WriteLine(b);
+                    string test = s._bitAR.Length.ToString();
+                    int i = 0;
+                    Console.WriteLine(s._bitAR.Length);
+                    foreach (var c in s._bitAR.ToDigitString()) Console.Write(c);
+                    Console.WriteLine();
+                    foreach (var sx in seg)
+                    {
+                        Console.WriteLine(i + ": " + sx + "       size: " + sx.Length);
+                        i++;
+                    
+                    }
                 }
                 }
             catch (Exception e)
