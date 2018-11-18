@@ -62,7 +62,7 @@ namespace Binary_Client_Server
             
         }
 
-        private int CalculateSegmentSize() { return 7 + _arg_1.Length + _arg_2.Length + _data_length.Length + _dynamic_data.Length; }
+        private int CalculateSegmentSize() { return 7 + _arg_1.Length + _arg_2.Length + _data_length.Length + _dynamic_data.Length + _ptrto_arg1_size.Length; }
 
         public void createBuffer(int a, int b, Operation o, Status s)
         {
@@ -78,12 +78,12 @@ namespace Binary_Client_Server
             
             //zamina BitArray na string
             string bufer ="";
-            bufer += bm.change(new BitArray(new int[] { (Int32)_status })).ToString();//zmiana enum na bity
-            bufer += bm.change(new BitArray(new int[] { (Int32)_operation })).ToString();
-            bufer += _data_length.ToString();
-            bufer += _ptrto_arg1_size.ToString();
-            bufer += _arg_1.ToString();
-            bufer += _arg_2.ToString();
+            bufer += bm.change(new BitArray(new int[] { (Int32)_status })).ToDigitString();//zmiana enum na bity
+            bufer += bm.change(new BitArray(new int[] { (Int32)_operation })).ToDigitString();
+            bufer += _data_length.ToDigitString();
+            bufer += _ptrto_arg1_size.ToDigitString();
+            bufer += _arg_1.ToDigitString();
+            bufer += _arg_2.ToDigitString();
             //zamina string na bitarray
             var temp = new BitArray(bufer.Select(c => c == '1').ToArray());
             _bitAR = temp;
