@@ -57,7 +57,7 @@ namespace Binary_Client_Server
 
         public Segment(byte[] buffer)
         {
-            
+            _bitAR = StringUtilities.BytetoBinTransfer(buffer);
         }
 
         public BitArray GetBuffer()
@@ -122,10 +122,10 @@ namespace Binary_Client_Server
             //zamina BitArray na string 5
             string bufer ="";
             //zmiana enum na bity
-            bufer += BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(_status)).ToDigitString();
             string op = BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(_operation)).ToDigitString();
             if (op.Length < 3) op = op.PadLeft(3, '0');
             bufer += op;
+            bufer += BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(_status)).ToDigitString();
             bufer += _data_length.ToDigitString();
             bufer += _ptrto_arg1_size.ToDigitString();
             bufer += _arg_1.ToDigitString();
@@ -142,29 +142,28 @@ namespace Binary_Client_Server
         {
 
             var temp = new BitArray(_bitAR);
-            //string ar = temp.ToDigitString();
+            string ar = temp.ToDigitString();
             string[] toReturn = new string[6];
-            //toReturn[0] = ar.Substring(0, 3);//stan
-            //toReturn[1] = ar.Substring(3, 4);//operacja
-            //toReturn[2] = ar.Substring(7, 32);//dlugosc danych
-            //toReturn[3] = ar.Substring(39, 32);//wskaznik danych arg1
+            toReturn[0] = ar.Substring(0, 3);//operacja
+            toReturn[1] = ar.Substring(3, 4);//stan
+            toReturn[2] = ar.Substring(7, 32);//dlugosc danych
+            toReturn[3] = ar.Substring(39, 32);//wskaznik danych arg1
             int index_ptr = 0; int length_value = 0;//dl liczby1 ; dl liczby 1 i 2
-            
-            //toReturn[4] = ar.Substring(71, index_ptr);//liczba1
-            //toReturn[5] = ar.Substring(71 + index_ptr, length_value - index_ptr);//liczba2
+            index_ptr = StringUtilities.ConvertStringtoInt(toReturn[3]); length_value = StringUtilities.ConvertStringtoInt(toReturn[2]);
+            toReturn[4] = ar.Substring(71, index_ptr);//liczba1
+            toReturn[5] = ar.Substring(71 + index_ptr, length_value - index_ptr);//liczba2
 
 
-            for (int i = 0; i < temp.Length; i++)
-            {
-                if (i < 4) toReturn[0] += Convert.ToInt32(temp.Get(i));
-                if (i >= 4 && i < 7) toReturn[1] += Convert.ToInt32(temp.Get(i));
-                if (i >= 7 && i < 39) toReturn[2] += Convert.ToInt32(temp.Get(i));
-                if (i >= 39 && i < 71) toReturn[3] += Convert.ToInt32(temp.Get(i));
-                index_ptr = Convert.ToInt32(toReturn[3]);
-                length_value = Convert.ToInt32(toReturn[2]);
-                if (i >= 71 && i < 71 + index_ptr) toReturn[4] += Convert.ToInt32(temp.Get(i));
-                if (i >= 71 + index_ptr && i < 71 + length_value) toReturn[5] += Convert.ToInt32(temp.Get(i));
-            }
+            //for (int i = 0; i < temp.Length; i++)
+            //{
+            //    if (i < 3) toReturn[0] += Convert.ToInt32(temp.Get(i));
+            //    if (i >= 3 && i < 7) toReturn[1] += Convert.ToInt32(temp.Get(i));
+            //    if (i >= 7 && i < 39) toReturn[2] += Convert.ToInt32(temp.Get(i));
+            //    if (i >= 39 && i < 71) toReturn[3] += Convert.ToInt32(temp.Get(i));
+            //    if (i >= 71 && i < (71 + StringUtilities.Convert(toReturn[3]))) toReturn[4] += Convert.ToInt32(temp.Get(i));
+            //    if (i >= (71 + index_ptr) && i < (71 + StringUtilities.Convert(toReturn[2]))) toReturn[5] += Convert.ToInt32(temp.Get(i));
+            //}
+            //Console.WriteLine(StringUtilities.Convert(toReturn[3]) + "   " +  StringUtilities.Convert(toReturn[3]));
 
             return toReturn;
             

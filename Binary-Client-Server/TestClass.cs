@@ -16,9 +16,16 @@ namespace Binary_Client_Server
             
             try
             {
-
-                while (true)
+                bool run = true;
+                while (run)
                 {
+                    //BitArray b;
+                    //byte[] bt = new byte[2] { 1, 2 };
+
+                    //b = StringUtilities.BytetoBinTransfer(bt);
+                    //run = false;
+                    //foreach (var i in b) Console.Write(Convert.ToInt32(i));
+
                     string UserInput = Console.ReadLine();  //wczytanie danych do wyslania
                     Segment s = new Segment(Regex.Split(UserInput, "\\s+"));
                     string[] seg = s.Encoding();
@@ -31,7 +38,7 @@ namespace Binary_Client_Server
                     {
                         Console.WriteLine(i + ": " + sx + "       size: " + sx.Length);
                         i++;
-                    
+
                     }
                 }
                 }
