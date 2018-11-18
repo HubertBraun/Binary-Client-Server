@@ -119,12 +119,12 @@ namespace Binary_Client_Server
             _ptrto_arg1_size = BinaryMinimalizer.Change(new BitArray(new int[] { _arg_1.Length }));
 
             
-            //zamina BitArray na string 
+            //zamina BitArray na string 5
             string bufer ="";
             //zmiana enum na bity
             bufer += BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(_status)).ToDigitString();
             string op = BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(_operation)).ToDigitString();
-            if (op.Length < 4) op = op.PadLeft(4, '0');
+            if (op.Length < 3) op = op.PadLeft(3, '0');
             bufer += op;
             bufer += _data_length.ToDigitString();
             bufer += _ptrto_arg1_size.ToDigitString();
@@ -156,14 +156,14 @@ namespace Binary_Client_Server
 
             for (int i = 0; i < temp.Length; i++)
             {
-                if (i < 3) toReturn[0] += Convert.ToInt32(temp.Get(i));
-                if (i >= 3 && i < 7) toReturn[1] += Convert.ToInt32(temp.Get(i));
+                if (i < 4) toReturn[0] += Convert.ToInt32(temp.Get(i));
+                if (i >= 4 && i < 7) toReturn[1] += Convert.ToInt32(temp.Get(i));
                 if (i >= 7 && i < 39) toReturn[2] += Convert.ToInt32(temp.Get(i));
                 if (i >= 39 && i < 71) toReturn[3] += Convert.ToInt32(temp.Get(i));
                 index_ptr = Convert.ToInt32(toReturn[3]);
                 length_value = Convert.ToInt32(toReturn[2]);
                 if (i >= 71 && i < 71 + index_ptr) toReturn[4] += Convert.ToInt32(temp.Get(i));
-                if (i >= 71 + index_ptr && i < temp.Length) toReturn[5] += Convert.ToInt32(temp.Get(i));
+                if (i >= 71 + index_ptr && i < 71 + length_value) toReturn[5] += Convert.ToInt32(temp.Get(i));
             }
 
             return toReturn;
