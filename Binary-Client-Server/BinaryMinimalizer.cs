@@ -7,12 +7,12 @@ using System.Collections;
 
 namespace Binary_Client_Server
 {
-    class BinaryMinimalizer
+    static class BinaryMinimalizer
     {
 
 
 
-        public BitArray change(BitArray bits)//zamiana konca na poczatek, reprezentowanie BitArray w czytelnej formie
+        static public BitArray Change(BitArray bits)//zamiana konca na poczatek, reprezentowanie BitArray w czytelnej formie
         {
             int len = bits.Count;
             BitArray a = new BitArray(bits);
@@ -28,7 +28,7 @@ namespace Binary_Client_Server
             return a;
         }
 
-        public BitArray ReturnMinimalizedTable(int x)//minimalizowanie wielkosci
+        static public BitArray ReturnMinimalizedTable(int x)//minimalizowanie wielkosci
         {
             BitArray arr = new BitArray(new int[] { x });
             int index = 0;
@@ -46,7 +46,7 @@ namespace Binary_Client_Server
             {
                 toReturn[i] = arr[i];
             }
-            return toReturn = change(toReturn);
+            return Change(toReturn);
 
         }
 

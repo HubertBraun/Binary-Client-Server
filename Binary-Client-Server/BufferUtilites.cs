@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Binary_Client_Server
 {
-    class BufferUtilites    // klasa do operacji na buforze
+    static class BufferUtilites    // klasa do operacji na buforze
     {
         public static string ReadBuffer(byte[] buffer)      // zamiana bufora na string
         {

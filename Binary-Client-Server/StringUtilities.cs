@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Collections;
 namespace Binary_Client_Server
 {
-    static class StringtoBinary
+    static class StringUtilities
     {
         public static string ToDigitString(this BitArray array)
         {
@@ -15,5 +15,6 @@ namespace Binary_Client_Server
                 builder.Append(bit ? "1" : "0");
             return builder.ToString();
         }
+
     }
 }

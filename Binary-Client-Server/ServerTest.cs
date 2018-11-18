@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Binary_Client_Server
 {
-    class ServerTest : BufferUtilites
+    class ServerTest
     {
 
         private static void Main(string[] args)
@@ -24,12 +24,12 @@ namespace Binary_Client_Server
                 s.buffer = new byte[8];         // ustalenie wielkosci bufora
                 //TODO: bufor moze miec zmienna wielkosc
                 s.Read(ref s.buffer);   //odczytanie wiadomosci
-                Console.WriteLine("Message received: {0}", ReadMessage(s.buffer));
+                Console.WriteLine("Message received: {0}", BufferUtilites.ReadMessage(s.buffer));
                 //TODO: sprawdzenie pierwszych 3 bitow (operacja), implementacja do kazdej operacji osobnej metody
                 //TODO: byte[] NazwaOperacji(liczba1, liczba2);
                 
                 s.Write(ref s.buffer);  //wyslanie odpowiedzi
-                Console.WriteLine("Message sended: {0}", ReadMessage(s.buffer));   
+                Console.WriteLine("Message sended: {0}", BufferUtilites.ReadMessage(s.buffer));   
                 s.Exit();   // bezpieczne zakonczenie polaczenia
             }
             catch (Exception e)

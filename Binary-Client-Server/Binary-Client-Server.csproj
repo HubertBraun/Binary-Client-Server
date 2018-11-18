@@ -55,7 +55,8 @@
     <Compile Include="Segment.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="ServerTest.cs" />
-    <Compile Include="StringtoBinary.cs" />
+    <Compile Include="StringUtilities.cs" />
+    <Compile Include="TestClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

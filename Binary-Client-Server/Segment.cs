@@ -52,34 +52,78 @@ namespace Binary_Client_Server
         private BitArray _dynamic_data;//pole danych o dymanicznym rozmiarze
         private BitArray _ptrto_arg1_size;
 
-        
+
 
         private BitArray _bitAR;
 
- 
         public Segment(byte[] buffer)
         {
             
         }
 
+        public BitArray GetBuffer()
+        {
+            return _bitAR;
+        }
+
+        public Segment(string[] arguments)
+        {
+            if (arguments.Length != 3)
+                throw new ArgumentException("Nieprawidłowa liczba argumentów");
+            Operation tempOperation;
+            switch (arguments[1])
+            {
+                case "+":
+                    tempOperation = Operation.Adding;
+                    break;
+                case "-":
+                    tempOperation = Operation.Substracting;
+                    break;
+                case "*":
+                    tempOperation = Operation.Multiplicating;
+                    break;
+                case "/":
+                    tempOperation = Operation.Dividing;
+                    break;
+                case "==":
+                    tempOperation = Operation.Comparing;
+                    break;
+                case "^":
+                    tempOperation = Operation.Powering;
+                    break;
+                case "&":
+                    tempOperation = Operation.AND;
+                    break;
+                case "|":
+                    tempOperation = Operation.OR;
+                    break;
+                default:
+                    throw new ArgumentException("Nierozpoznana operacja matematyczna");
+
+            }
+
+            CreateBuffer(Int32.Parse(arguments[0]), Int32.Parse(arguments[2]), tempOperation, Status.autorized);
+
+        }
+
         private int CalculateSegmentSize() { return 7 + _arg_1.Length + _arg_2.Length + _data_length.Length + _dynamic_data.Length + _ptrto_arg1_size.Length; }
 
-        public void createBuffer(int a, int b, Operation o, Status s)
+        public void CreateBuffer(int a, int b, Operation o, Status s)
         {
             //SSSS OOO DATA32PTR DATA 
-            BinaryMinimalizer bm = new BinaryMinimalizer();
-            _arg_1 = bm.ReturnMinimalizedTable(a);//zminimalizowanie i zamiana liczb na ciag bitow
-            _arg_2 = bm.ReturnMinimalizedTable(b);
-            _data_length = bm.change(new BitArray(new int[] { _arg_1.Length + _arg_2.Length}));//minimalizacja bitow ptr
+
+            _arg_1 = BinaryMinimalizer.ReturnMinimalizedTable(a);//zminimalizowanie i zamiana liczb na ciag bitow
+            _arg_2 = BinaryMinimalizer.ReturnMinimalizedTable(b);
+            _data_length = BinaryMinimalizer.Change(new BitArray(new int[] { _arg_1.Length + _arg_2.Length}));//minimalizacja bitow ptr
             _operation = o;//przypisanie pol
             _status = s;
-            _ptrto_arg1_size = bm.change(new BitArray(new int[] { _arg_1.Length + _arg_2.Length }));
+            _ptrto_arg1_size = BinaryMinimalizer.Change(new BitArray(new int[] { _arg_1.Length + _arg_2.Length }));
 
             
             //zamina BitArray na string
             string bufer ="";
-            bufer += bm.change(new BitArray(new int[] { (Int32)_status })).ToDigitString();//zmiana enum na bity
-            bufer += bm.change(new BitArray(new int[] { (Int32)_operation })).ToDigitString();
+            bufer += BinaryMinimalizer.Change(new BitArray(new int[] { (Int32)_status })).ToDigitString();//zmiana enum na bity
+            bufer += BinaryMinimalizer.Change(new BitArray(new int[] { (Int32)_operation })).ToDigitString();
             bufer += _data_length.ToDigitString();
             bufer += _ptrto_arg1_size.ToDigitString();
             bufer += _arg_1.ToDigitString();
@@ -93,8 +137,8 @@ namespace Binary_Client_Server
 
         public string[] Encoding()//zwracanie tablicy stringow po enkodowaniu
         {
-            string ar = _bitAR.ToString();
-            string[] toReturn = new string[4];
+            string ar = _bitAR.ToDigitString();
+            string[] toReturn = new string[6];
             toReturn[0] = ar.Substring(0, 3);//stan
             toReturn[1] = ar.Substring(3, 4);//operacja
             toReturn[2] = ar.Substring(7, 32);//dlugosc danych
