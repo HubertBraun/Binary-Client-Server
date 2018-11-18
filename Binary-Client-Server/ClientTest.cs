@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Binary_Client_Server 
@@ -14,28 +12,15 @@ namespace Binary_Client_Server
         {
 
             Client c = new Client();        // utworzenie obiektu klienta (bezargumentowo do testow)
-            string UserInput;
             try
             {
-                while (true)    // do testow
-                {
-                    UserInput = Console.ReadLine();  //wczytanie danych do wyslania
-                    Segment s = new Segment(Regex.Split(UserInput, "\\s+"));
-                    string[] seg = s.Encoding();
-                    BitArray arr = s.GetBuffer();
-
-                    foreach (string str in arr)
-                    {
-                        Console.Write(str);
-                    }
-
-                }
-
-
                 Console.WriteLine("Client");    // informacja o utworzeniu obiektu klienta
                 c.Createclient();               // utworzenie klienta, port 27015
                 c.CreateStream();               // utworzenie strumienia z serwerem
                 Console.WriteLine("Connected"); // informacja o polaczeniu
+
+                string UserInput = Console.ReadLine();  //wczytanie danych do wyslania
+
                 //TODO: wczytywanie dwoch liczb, zapisanie ich do BitArray[] 
                 //TODO: oraz przeksztalcenie do postaci binarnej
 
