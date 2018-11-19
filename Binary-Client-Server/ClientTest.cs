@@ -12,15 +12,15 @@ namespace Binary_Client_Server
         private static string[] ReadUserInput()
         {
             Regex reg = new Regex("(\\d+)\\s*?(\\D)\\s*?(\\d+)");
-            string UserInput = Console.ReadLine();  //wczytanie danych do wyslania
+            string UserInput = Console.ReadLine();  // wczytanie danych do wyslania
 
             Match m = reg.Match(UserInput);
             GroupCollection groups = m.Groups;
 
             string[] str = new string[3];
-            str[0] = m.Groups[1].Value;
-            str[1] = m.Groups[2].Value;
-            str[2] = m.Groups[3].Value;
+            str[0] = m.Groups[1].Value;     // pierwsza liczba
+            str[1] = m.Groups[2].Value;     // operacja matematyczna
+            str[2] = m.Groups[3].Value;     // druga liczba
             Segment s = new Segment(str);
             return str;
         }
@@ -41,16 +41,11 @@ namespace Binary_Client_Server
                 {
                     UserInput = ReadUserInput();
                     Segment s = new Segment(UserInput);
-                    string[] str = s.Encoding();
-                    int i = 0;
-                    foreach (var sx in str)
-                    {
-                        Console.WriteLine(i + ": " + sx + "       size: " + sx.Length);
-                        i++;
 
-                    }
-                    c.buffer = BufferUtilites.ToBuffer(s._bitAR);
-                    Console.WriteLine("Message sended: {0}", BufferUtilites.ReadMessage(c.buffer));
+                    Console.WriteLine(s.ReadSegment());     // wyswietlenie segmentu
+                    c.buffer = BufferUtilites.ToBuffer(s._bitAR);   
+                    Console.WriteLine("Message sended: {0}", BufferUtilites.ReadMessage(c.buffer)); // wyswiwietlenie segmentu w postaci szesnastkowej
+
                     c.Write(ref c.buffer);  // wysylanie
                     c.Read(ref c.buffer);   // odbieranie
                     //Console.WriteLine("Message received: {0}", BufferUtilites.ReadMessage(c.buffer));

@@ -18,7 +18,6 @@ using System.Threading.Tasks;
 // 111 - potęgowanie   0111                    0xFFFFFFFF - 2 zmienne po 2^31             
 namespace Binary_Client_Server
 {
-    #region enum
     public enum Operation
     {
         Adding = 0b000,
@@ -40,7 +39,6 @@ namespace Binary_Client_Server
         //notdefined = 0b1111
         
     }
-    #endregion
 
     public class Segment
     {
@@ -170,7 +168,22 @@ namespace Binary_Client_Server
             
         }
 
+        public string ReadSegment()
+        {
+            string[] temp = this.Encoding();
+            string toReturn;
+            StringBuilder Builder = new StringBuilder();
+            int i = 0;
+            foreach (string str in temp)
+            {
 
+                Builder.Append(i + ": " + str +"   size: " +str.Length + "\n");
+                i++;
+            }
+
+
+            return Builder.ToString();
+        }
 
 
 

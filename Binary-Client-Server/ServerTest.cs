@@ -24,21 +24,11 @@ namespace Binary_Client_Server
                 s.buffer = new byte[16];         // ustalenie wielkosci bufora
                 while (true)
                 {
-
-
-                    s.Read(ref s.buffer);   //odczytanie wiadomosci
-                    Console.WriteLine("Message received: {0}", BufferUtilites.ReadMessage(s.buffer));
+                    s.Read(ref s.buffer);   // odczytanie wiadomosci
                     Segment seg = new Segment(s.buffer);
-                    string[] str = seg.Encoding();
-                    int i = 0;
-                    foreach (var sx in str)
-                    {
-                        Console.WriteLine(i + ": " + sx + "       size: " + sx.Length);
-                        i++;
 
-                    }
-                    //TODO: sprawdzenie pierwszych 3 bitow (operacja), implementacja do kazdej operacji osobnej metody
-                    //TODO: byte[] NazwaOperacji(liczba1, liczba2);
+                    Console.WriteLine(seg.ReadSegment());   //odczytanie segmentu
+                    Console.WriteLine("Message received: {0}", BufferUtilites.ReadMessage(s.buffer));   // wyswiwietlenie segmentu w postaci szesnastkowej
 
                     s.Write(ref s.buffer);  //wyslanie odpowiedzi
                 }
