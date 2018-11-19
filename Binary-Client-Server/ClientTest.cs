@@ -40,14 +40,18 @@ namespace Binary_Client_Server
                 while (true)
                 {
                     UserInput = ReadUserInput();
-                    Segment s = new Segment(UserInput);
+                    Segment seg = new Segment(UserInput);
 
-                    Console.WriteLine(s.ReadSegment());     // wyswietlenie segmentu
-                    c.buffer = BufferUtilites.ToBuffer(s._bitAR);   
+                    Console.WriteLine(seg.ReadSegment());     // wyswietlenie segmentu
+                    c.buffer = BufferUtilites.ToBuffer(seg._bitAR);   
                     Console.WriteLine("Message sended: {0}", BufferUtilites.ReadMessage(c.buffer)); // wyswiwietlenie segmentu w postaci szesnastkowej
-
                     c.Write(ref c.buffer);  // wysylanie
+                    c.buffer = new byte[32];
                     c.Read(ref c.buffer);   // odbieranie
+                    Console.WriteLine("Message received: {0}", BufferUtilites.ReadMessage(c.buffer)); // wyswiwietlenie segmentu w postaci szesnastkowej
+                    seg = new Segment(c.buffer);
+                    Console.WriteLine(seg.ReadSegment());     // wyswietlenie segmentu
+                    Console.WriteLine("Serwer: {0}",c.ReadAnswer(seg));
                     //Console.WriteLine("Message received: {0}", BufferUtilites.ReadMessage(c.buffer));
                 }
                 

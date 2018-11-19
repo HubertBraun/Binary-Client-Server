@@ -17,7 +17,7 @@ namespace Binary_Client_Server
         }
 
 
-        public static int ConvertStringtoInt(string str1)
+        public static int ConvertStringtoInt(this string str1)
         {
             if (str1 == "")
                 throw new Exception("Invalid input");

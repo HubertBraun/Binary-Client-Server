@@ -12,6 +12,7 @@ namespace Binary_Client_Server
     class Client : Host 
     {
         public Client() => _IP = System.Net.IPAddress.Parse("127.0.0.1");   // konstruktor bezargumentowy (do testow)
+        public void Createclient() => client = new TcpClient(_IP.ToString(), portNum);  // utworzenie klienta
 
         public Client(string[] args)    // konstruktor argumentowy
         {
@@ -29,7 +30,14 @@ namespace Binary_Client_Server
             }
 
         }
-        public void Createclient() => client = new TcpClient(_IP.ToString(), portNum);  // utworzenie klienta
+
+        public int ReadAnswer(Segment seg)
+        {
+            string[] str = seg.Encoding();
+            Console.WriteLine(str[4]);
+            string toReturn = str[4];   // miejsce, w ktorym zapisana jest liczba
+            return toReturn.ConvertStringtoInt();
+        }
 
 
     }

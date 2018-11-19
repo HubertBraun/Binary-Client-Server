@@ -64,6 +64,12 @@ namespace Binary_Client_Server
             return _bitAR;
         }
 
+        public Segment(int number, Operation op)
+        {
+            CreateBuffer(number, op, Status.autorized);
+
+        }
+
         public Segment(string[] arguments)
         {
             if (arguments.Length != 3)
@@ -107,7 +113,7 @@ namespace Binary_Client_Server
 
             private int CalculateSegmentSize() { return 7 + _arg_1.Length + _arg_2.Length + _data_length.Length + _ptrto_arg1_size.Length; }
 
-        public void CreateBuffer(int a, int b, Operation o, Status s)
+        public void CreateBuffer(int a, int b, Operation o, Status s)   // dla dwoch liczb
         {
             //SSSS OOO DATA32PTR DATA 
 
@@ -137,7 +143,38 @@ namespace Binary_Client_Server
 
         }
 
-            public string[] Encoding()//zwracanie tablicy stringow po enkodowaniu
+        public void CreateBuffer(int a, Operation o, Status s)      // dla jednej liczby
+        {
+            //SSSS OOO DATA32PTR DATA 
+
+            _arg_1 = BinaryMinimalizer.ReturnMinimalizedTable(a);//zminimalizowanie i zamiana liczb na ciag bitow
+            //_arg_2 = BinaryMinimalizer.ReturnMinimalizedTable(b);
+            _data_length = BinaryMinimalizer.Change(new BitArray(new int[] { _arg_1.Length }));//minimalizacja bitow ptr
+            _operation = o;//przypisanie pol
+            _status = s;
+            _ptrto_arg1_size = BinaryMinimalizer.Change(new BitArray(new int[] { _arg_1.Length }));
+
+
+            //zamina BitArray na string 5
+            string bufer = "";
+            //zmiana enum na bity
+            string op = BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(_operation)).ToDigitString();
+            if (op.Length < 3) op = op.PadLeft(3, '0');
+            bufer += op;
+            bufer += BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(_status)).ToDigitString();
+            bufer += _data_length.ToDigitString();
+            bufer += _ptrto_arg1_size.ToDigitString();
+            bufer += _arg_1.ToDigitString();
+
+            //bufer += _arg_2.ToDigitString();
+            //zamina string na bitarray
+            var temp = new BitArray(bufer.Select(c => c == '1').ToArray());
+            _bitAR = new BitArray(temp);
+
+
+        }
+
+        public string[] Encoding()//zwracanie tablicy stringow po enkodowaniu
         {
 
             var temp = new BitArray(_bitAR);
@@ -150,6 +187,8 @@ namespace Binary_Client_Server
             int index_ptr = 0; int length_value = 0;//dl liczby1 ; dl liczby 1 i 2
             index_ptr = StringUtilities.ConvertStringtoInt(toReturn[3]); length_value = StringUtilities.ConvertStringtoInt(toReturn[2]);
             toReturn[4] = ar.Substring(71, index_ptr);//liczba1
+
+            if(toReturn[4]!=toReturn[3])
             toReturn[5] = ar.Substring(71 + index_ptr, length_value - index_ptr);//liczba2
 
 
@@ -168,10 +207,11 @@ namespace Binary_Client_Server
             
         }
 
+
+
         public string ReadSegment()
         {
             string[] temp = this.Encoding();
-            string toReturn;
             StringBuilder Builder = new StringBuilder();
             int i = 0;
             foreach (string str in temp)
