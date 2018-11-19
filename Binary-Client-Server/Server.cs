@@ -23,6 +23,7 @@ namespace Binary_Client_Server
             int number1 = str[4].ConvertStringtoInt();    // pierwsza liczba
             int number2 = str[5].ConvertStringtoInt();    // druga liczba
             int toReturn = 0;
+            //TODO: dodac flagi statusu(operacja mozliwa jesli autorized, else if nie wolno robic)
             switch(operation)
             {
                 case "000":    // dodawanie
@@ -45,7 +46,8 @@ namespace Binary_Client_Server
                     toReturn = number1 & number2;
                     Console.WriteLine(number1 + "&" + number2 + "=" + toReturn);
                     break;
-                case "101":    // OR
+                case "101":    // OR 
+                    //TODO: zmienic or na silnia -> utworzyc metode calculateFactorial() ->zmienic w segmencie or na Factorial
                     toReturn = number1 | number2;
                     Console.WriteLine(number1 + "|" + number2 + "=" + toReturn);
                     break;
