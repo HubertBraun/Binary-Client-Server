@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,6 +31,12 @@ namespace Binary_Client_Server
             tempString += "\n" + buffer.Length + " bytes\n";    //dlugosc w bajtach
             return tempString;
         }
+        public static byte[] ToBuffer(BitArray bits)
+        {
+            byte[] ret = new byte[(bits.Length - 1) / 8 + 1];
+            bits.CopyTo(ret, 0);
+            return ret;
 
+        }
     }
 }

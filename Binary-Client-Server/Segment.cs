@@ -57,7 +57,8 @@ namespace Binary_Client_Server
 
         public Segment(byte[] buffer)
         {
-            _bitAR = StringUtilities.BytetoBinTransfer(buffer);
+            _bitAR = new BitArray(buffer);
+            //_bitAR = StringUtilities.BytetoBinTransfer(buffer);
         }
 
         public BitArray GetBuffer()
@@ -105,7 +106,8 @@ namespace Binary_Client_Server
 
         }
 
-        private int CalculateSegmentSize() { return 7 + _arg_1.Length + _arg_2.Length + _data_length.Length + _ptrto_arg1_size.Length; }
+
+            private int CalculateSegmentSize() { return 7 + _arg_1.Length + _arg_2.Length + _data_length.Length + _ptrto_arg1_size.Length; }
 
         public void CreateBuffer(int a, int b, Operation o, Status s)
         {
@@ -137,8 +139,7 @@ namespace Binary_Client_Server
 
         }
 
-
-        public string[] Encoding()//zwracanie tablicy stringow po enkodowaniu
+            public string[] Encoding()//zwracanie tablicy stringow po enkodowaniu
         {
 
             var temp = new BitArray(_bitAR);
