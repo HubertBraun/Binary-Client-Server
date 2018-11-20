@@ -67,10 +67,7 @@ namespace Binary_Client_Server
 
 
         public BitArray _bitAR;
-        private Operation adding;
-        private Status notautorized;
-        private ID undefined;
-        private Factorial notCalculate;
+        
 
         public Segment(byte[] buffer)
         {
@@ -158,7 +155,7 @@ namespace Binary_Client_Server
             _data_length = BinaryMinimalizer.Change(new BitArray(new int[] { 8 }));//minimalizacja bitow ptr
             _operation = o;//przypisanie pol
             _status = s;
-            _fac = f.ToString();
+            _fac = Convert.ToString((int)f).ToString();
 
 
 
@@ -204,10 +201,10 @@ namespace Binary_Client_Server
             _data_length = BinaryMinimalizer.Change(new BitArray(new int[] { _arg_1.Length + _arg_2.Length + 8}));//minimalizacja bitow ptr
             _operation = o;//przypisanie pol
             _status = s;
-            _fac = f.ToString();
-            
+            _fac = Convert.ToString((int)f).ToString();
 
-            
+
+             
             //zamina BitArray na string 5
             string bufer ="";
             //Operacja
@@ -248,7 +245,7 @@ namespace Binary_Client_Server
             _data_length = BinaryMinimalizer.Change(new BitArray(new int[] { _arg_1.Length  + 8 }));//minimalizacja bitow ptr
             _operation = o;//przypisanie pol
             _status = s;
-            _fac = f.ToString();
+            _fac = Convert.ToString((int)f).ToString();
             //zamina BitArray na string 5
             string bufer = "";
             //zmiana enum na bity
