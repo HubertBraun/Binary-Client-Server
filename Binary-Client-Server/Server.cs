@@ -21,6 +21,7 @@ namespace Binary_Client_Server
             string[] str = seg.Encoding();
             string operation = str[0];
             string status = str[1];
+
             int number1 = str[4].ConvertStringtoInt();    // pierwsza liczba
             int number2 = str[5].ConvertStringtoInt();    // druga liczba
             int toReturn = 0;
@@ -68,6 +69,7 @@ namespace Binary_Client_Server
                         break;
                     default:
                         Console.WriteLine("Nierozpoznana operacja");
+                        toReturn = -1;
                         break;
 
                 }
@@ -86,8 +88,11 @@ namespace Binary_Client_Server
 
             Operation op = (Operation)t.Item1.ConvertStringtoInt();
             Status s = (Status)t.Item2.ConvertStringtoInt();
-            return new Segment(t.Item3, op, s, ID.defined);
-            
+            if(t.Item3!=-1)
+            return new Segment(t.Item3, op, s, ID.defined, Factorial.notCalculate);
+            else
+                return new Segment(op, s, ID.defined, Factorial.notCalculate);
+
         }
         public byte[] IDRequest(byte[] buffer)
         {

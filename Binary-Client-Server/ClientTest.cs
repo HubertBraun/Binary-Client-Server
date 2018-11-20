@@ -66,6 +66,8 @@ namespace Binary_Client_Server
                     Console.WriteLine(seg.ReadSegment());     // wyswietlenie segmentu
                     c.buffer = BufferUtilites.ToBuffer(seg._bitAR);   
                     Console.WriteLine("Message sended: {0}", BufferUtilites.ReadMessage(c.buffer)); // wyswiwietlenie segmentu w postaci szesnastkowej
+                    Console.WriteLine(seg.ReadSegment());     // wyswietlenie segmentu
+                    Console.WriteLine("***********END SENDED MESSAGE");
                     c.Write(c.buffer);  // wysylanie
                     c.buffer = new byte[32];
                     c.Read(ref c.buffer);   // odbieranie

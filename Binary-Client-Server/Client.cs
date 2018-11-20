@@ -42,7 +42,7 @@ namespace Binary_Client_Server
         public byte[] IDRequest()
         {
             byte[] buffer;
-            Segment seg =  new Segment(0, Operation.Adding, Status.notautorized, ID.undefined);
+            Segment seg =  new Segment(Operation.Adding, Status.notautorized, ID.undefined, Factorial.notCalculate);
             buffer = BufferUtilites.ToBuffer(seg._bitAR);
             return buffer;
         }
