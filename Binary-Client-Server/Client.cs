@@ -38,6 +38,10 @@ namespace Binary_Client_Server
             {
                 return -2;
             }
+            else if (str[1] == "1110")
+            {
+                return -3;
+            }
 
             if (str.Length >= 7)
             {

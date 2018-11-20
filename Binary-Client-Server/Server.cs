@@ -16,6 +16,12 @@ namespace Binary_Client_Server
         public void StartListen() => listener.Start();      // rozpoczecie nasluchiwania
         public void AccecptClient() => client = listener.AcceptTcpClient();         // akceptacja klienta
 
+        private int CalculateFactorial(int n)
+        {
+            if (n <= 1) return 1;
+            else return checked(n * CalculateFactorial(n - 1));
+        }
+
         public Tuple<string, string, int> Calculate(Segment seg)
         {
             string[] str = seg.Encoding();
@@ -26,12 +32,14 @@ namespace Binary_Client_Server
             int number2 = str[7].ConvertStringtoInt();    // druga liczba
             int toReturn = 0;
             //TODO: dodac flagi statusu(operacja mozliwa jesli autorized, else if nie wolno robic)
-            try
-            {
+            
+            
                 Console.WriteLine("operacja {0}", str[0]);
-            if (str[1] == BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(Status.autorized)).ToDigitString())
+            if (str[4] == "0")  // jesli nie ustawiono silni
             {
-
+                if (str[1] == BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(Status.autorized)).ToDigitString())
+                {
+                    Console.WriteLine("dasdasdas");
                     switch (operation)
                     {
 
@@ -44,11 +52,27 @@ namespace Binary_Client_Server
                             Console.WriteLine(number1 + "-" + number2 + "=" + toReturn);
                             break;
                         case "010":    // mnozenie
-                            toReturn = checked(number1 * number2);
+                            try
+                            {
+                                toReturn = checked(number1 * number2);
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e.Message);
+                                status = "1100"; // overflow
+                            }
                             Console.WriteLine(number1 + "*" + number2 + "=" + toReturn);
                             break;
                         case "011":    // dzielenie
-                            toReturn = checked(number1 / number2);
+                            try
+                            {
+                                toReturn = checked(number1 / number2);
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e.Message);
+                                status = "1110"; // notallowed
+                            }
                             Console.WriteLine(number1 + "/" + number2 + "=" + toReturn);
                             break;
                         case "100":    // AND
@@ -79,20 +103,29 @@ namespace Binary_Client_Server
 
                     }
 
+                }
+                else
+                {
+                    status = "1111";
+
+                }
+                return new Tuple<string, string, int>(operation, status, toReturn);
             }
             else
             {
-                status = "1111";
+                try
+                {
+                    toReturn = CalculateFactorial(number1);
+                }
+                catch(Exception e)
+                {
+                    status = "1100"; // overflow
+                    Console.WriteLine(e.Message);
+                }
+                return new Tuple<string, string, int>(operation, status, toReturn);
+            }
 
-            }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                status = "1100"; // overflow
-                Console.ReadKey();
-            }
-            return new Tuple<string, string, int>(operation, status, toReturn);
+
 
         }
 

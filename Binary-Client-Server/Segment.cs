@@ -121,19 +121,21 @@ namespace Binary_Client_Server
                         break;
                     default:
                         throw new ArgumentException("Nierozpoznana operacja matematyczna");
-
+                        
                 }
+                CreateBuffer(Int32.Parse(arguments[0]), Int32.Parse(arguments[2]), tempOperation, Status.autorized, ID.defined, Factorial.notCalculate);
             }
             else if(arguments.Length == 2 && arguments[1] == "!")
             {
                 // FractionalFlag = 1
                 //TODO: nie dziala
+                tempOperation = Operation.Adding;
                 Console.WriteLine("Silnia!");
+                CreateBuffer(Int32.Parse(arguments[0]),0, tempOperation, Status.autorized, ID.defined, Factorial.Calculate);
+                Console.WriteLine("arg 0 {0}, arg 1 {1}", arguments[0], arguments[1]);
             }
             else
                 throw new ArgumentException("Nierozpoznana operacja matematyczna");
-            Console.WriteLine("arg 0 {0}, arg 1 {1}", arguments[0], arguments[1]);
-            CreateBuffer(Int32.Parse(arguments[0]), Int32.Parse(arguments[2]), tempOperation, Status.autorized, ID.defined, Factorial.notCalculate);
 
         }
 

@@ -84,6 +84,10 @@ namespace Binary_Client_Server
                     {
                         Console.WriteLine("OVERFLOW");
                     }
+                    else if (c.ReadAnswer(seg) == -3)
+                    {
+                        Console.WriteLine("NOTALLOWED");
+                    }
                     else
                     Console.WriteLine("Serwer: {0}",c.ReadAnswer(seg));
                     //Console.WriteLine("Message received: {0}", BufferUtilites.ReadMessage(c.buffer));
