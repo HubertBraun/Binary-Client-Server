@@ -13,15 +13,36 @@ namespace Binary_Client_Server
         {
             Regex reg = new Regex("(\\d+)\\s*?(\\D)\\s*?(\\d+)");
             string UserInput = Console.ReadLine();  // wczytanie danych do wyslania
-
+            Segment s;
             Match m = reg.Match(UserInput);
             GroupCollection groups = m.Groups;
+            string[] str = new string[1];
+            if (m.Groups.Count == 4)
+            {
+                Console.WriteLine(m.Groups[1].Value);
+                Console.WriteLine(m.Groups[2].Value);
+                Console.WriteLine(m.Groups[3].Value);
+                str = new string[3];
+                str[0] = m.Groups[1].Value;     // pierwsza liczba
+                str[1] = m.Groups[2].Value;     // operacja matematyczna
+                str[2] = m.Groups[3].Value;     // druga liczba
+                s = new Segment(str);
+            }
+            else
+            {
+                reg = new Regex("(\\d+)\\s*?(\\D)");
+                m = reg.Match(UserInput);
+                groups = m.Groups;
+                Console.WriteLine(m.Groups[1].Value);
+                Console.WriteLine(m.Groups[2].Value);
+                Console.WriteLine(m.Groups[3].Value);
+                str = new string[2];
+                str[0] = m.Groups[1].Value;     // pierwsza liczba
+                str[1] = m.Groups[2].Value;     // operacja matematyczna
+                Console.WriteLine("Silnia!");
+                s = new Segment(str);
+            }
 
-            string[] str = new string[3];
-            str[0] = m.Groups[1].Value;     // pierwsza liczba
-            str[1] = m.Groups[2].Value;     // operacja matematyczna
-            str[2] = m.Groups[3].Value;     // druga liczba
-            Segment s = new Segment(str);
             return str;
         }
 
@@ -35,7 +56,7 @@ namespace Binary_Client_Server
                 c.Createclient();               // utworzenie klienta, port 27015
                 c.CreateStream();               // utworzenie strumienia z serwerem
                 Console.WriteLine("Connected"); // informacja o polaczeniu
-
+                c.Write(c.IDRequest());
                 string[] UserInput;  //wczytanie danych do wyslania
                 while (true)
                 {
@@ -45,7 +66,7 @@ namespace Binary_Client_Server
                     Console.WriteLine(seg.ReadSegment());     // wyswietlenie segmentu
                     c.buffer = BufferUtilites.ToBuffer(seg._bitAR);   
                     Console.WriteLine("Message sended: {0}", BufferUtilites.ReadMessage(c.buffer)); // wyswiwietlenie segmentu w postaci szesnastkowej
-                    c.Write(ref c.buffer);  // wysylanie
+                    c.Write(c.buffer);  // wysylanie
                     c.buffer = new byte[32];
                     c.Read(ref c.buffer);   // odbieranie
                     Console.WriteLine("Message received: {0}", BufferUtilites.ReadMessage(c.buffer)); // wyswiwietlenie segmentu w postaci szesnastkowej

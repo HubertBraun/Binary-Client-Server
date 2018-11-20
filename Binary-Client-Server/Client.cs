@@ -19,7 +19,7 @@ namespace Binary_Client_Server
             if (args.Length == 1)   // uruchamianie programu z parametrem
             {
                 _IP = System.Net.IPAddress.Parse(args[0]);
-                //TODO: obsluzyc wyjatki, przy wpisaniu niepoprawnego adresi IP
+                //TODO: obsluzyc wyjatki, przy wpisaniu niepoprawnego adresu IP
                 Console.WriteLine("Adres IP Servera: {0}", _IP);
 
             }
@@ -38,7 +38,14 @@ namespace Binary_Client_Server
             string toReturn = str[4];   // miejsce, w ktorym zapisana jest liczba
             return toReturn.ConvertStringtoInt();
         }
-
+       
+        public byte[] IDRequest()
+        {
+            byte[] buffer;
+            Segment seg =  new Segment(0, Operation.Adding, Status.notautorized, ID.undefined);
+            buffer = BufferUtilites.ToBuffer(seg._bitAR);
+            return buffer;
+        }
 
     }
 

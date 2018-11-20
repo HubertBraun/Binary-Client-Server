@@ -36,6 +36,7 @@ namespace Binary_Client_Server
         autorized = 0b1000, //poprawne dzialanie
         overflow = 0b1100,//przekroczenie zakresu
         notallowed = 0b1110,//niedozwolona operacja np. dzielenie przez zero
+        notautorized = 0b1111, // brak id
         //notdefined = 0b1111
         
     }
@@ -71,47 +72,57 @@ namespace Binary_Client_Server
             return _bitAR;
         }
 
-        public Segment(int number, Operation op)
+        public Segment(int number, Operation op, Status s, ID id)
         {
-            CreateBuffer(number, op, Status.autorized, ID.undefined);
+            CreateBuffer(number, op, s, id);
 
         }
 
         public Segment(string[] arguments)
         {
-            if (arguments.Length != 3)
+            if (arguments.Length < 2  || arguments.Length > 3 )
                 throw new ArgumentException("Nieprawidłowa liczba argumentów");
-            Operation tempOperation;
-            switch (arguments[1])
+            Operation tempOperation = Operation.Adding;
+            if (arguments.Length == 3)
             {
-                case "+":
-                    tempOperation = Operation.Adding;
-                    break;
-                case "-":
-                    tempOperation = Operation.Substracting;
-                    break;
-                case "*":
-                    tempOperation = Operation.Multiplicating;
-                    break;
-                case "/":
-                    tempOperation = Operation.Dividing;
-                    break;
-                case "==":
-                    tempOperation = Operation.Comparing;
-                    break;
-                case "^":
-                    tempOperation = Operation.Powering;
-                    break;
-                case "&":
-                    tempOperation = Operation.AND;
-                    break;
-                case "|":
-                    tempOperation = Operation.OR;
-                    break;
-                default:
-                    throw new ArgumentException("Nierozpoznana operacja matematyczna");
+                switch (arguments[1])
+                {
+                    case "+":
+                        tempOperation = Operation.Adding;
+                        break;
+                    case "-":
+                        tempOperation = Operation.Substracting;
+                        break;
+                    case "*":
+                        tempOperation = Operation.Multiplicating;
+                        break;
+                    case "/":
+                        tempOperation = Operation.Dividing;
+                        break;
+                    case "==":
+                        tempOperation = Operation.Comparing;
+                        break;
+                    case "^":
+                        tempOperation = Operation.Powering;
+                        break;
+                    case "&":
+                        tempOperation = Operation.AND;
+                        break;
+                    case "|":
+                        tempOperation = Operation.OR;
+                        break;
+                    default:
+                        throw new ArgumentException("Nierozpoznana operacja matematyczna");
 
+                }
             }
+            else if(arguments.Length == 2 && arguments[1] == "!")
+            {
+                // FractionalFlag = 1
+                Console.WriteLine("Silnia!");
+            }
+            else
+                throw new ArgumentException("Nierozpoznana operacja matematyczna");
 
             CreateBuffer(Int32.Parse(arguments[0]), Int32.Parse(arguments[2]), tempOperation, Status.autorized, ID.undefined);
 
@@ -237,14 +248,14 @@ namespace Binary_Client_Server
         {
             string[] temp = this.Encoding();
             StringBuilder Builder = new StringBuilder();
-            int i = 0;
-            foreach (string str in temp)
+            Builder.Append(0 + ": " + temp[0] + "\t\t" + (Operation)temp[0].ConvertStringtoInt() + "\t\t" + "size: " + temp[0].Length + "\n");
+            Builder.Append(1 + ": " + temp[1] + "\t\t" + (Status)temp[1].ConvertStringtoInt() + "\t" + "size: " + temp[1].Length + "\n");
+            Builder.Append(2 + ": " + temp[2] + "\t" + "size: " + temp[2].Length + "\n");
+            Builder.Append(3 + ": " + temp[3] + "\t\t" + (ID)temp[3].ConvertStringtoInt() + "\t" + "size: " + temp[3].Length + "\n");
+            for (int i = 4; i < temp.Length; i++)
             {
-
-                Builder.Append(i + ": " + str +"   size: " +str.Length + "\n");
-                i++;
+                Builder.Append(i + ": " + temp[i] + "\t" + "size: " + temp[i].Length + "\n");
             }
-
 
             return Builder.ToString();
         }
