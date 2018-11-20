@@ -34,9 +34,20 @@ namespace Binary_Client_Server
         public int ReadAnswer(Segment seg)
         {
             string[] str = seg.Encoding();
-            Console.WriteLine(str[4]);
-            string toReturn = str[4];   // miejsce, w ktorym zapisana jest liczba
-            return toReturn.ConvertStringtoInt();
+            if(str[1] == "1100")
+            {
+                return -2;
+            }
+
+            if (str.Length >= 7)
+            {
+                Console.WriteLine(str[6]);
+                string toReturn = str[6];   // miejsce, w ktorym zapisana jest liczba
+                return toReturn.ConvertStringtoInt();
+            }
+            else
+                return -1;
+           
         }
        
         public byte[] IDRequest()

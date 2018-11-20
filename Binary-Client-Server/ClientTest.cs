@@ -57,11 +57,17 @@ namespace Binary_Client_Server
                 c.CreateStream();               // utworzenie strumienia z serwerem
                 Console.WriteLine("Connected"); // informacja o polaczeniu
                 c.Write(c.IDRequest());
+                c.buffer = new byte[16];
+                c.Read(ref c.buffer);
+                Console.WriteLine("ID GET: {0}", BufferUtilites.ReadMessage(c.buffer)); // wyswiwietlenie segmentu w postaci szesnastkowej
+                Segment seg = new Segment(c.buffer);
+                Console.WriteLine(seg.ReadSegment());
+                Console.WriteLine("FOR\n\n");
                 string[] UserInput;  //wczytanie danych do wyslania
                 while (true)
                 {
                     UserInput = ReadUserInput();
-                    Segment seg = new Segment(UserInput);
+                    seg = new Segment(UserInput);
 
                     Console.WriteLine(seg.ReadSegment());     // wyswietlenie segmentu
                     c.buffer = BufferUtilites.ToBuffer(seg._bitAR);   
@@ -69,11 +75,16 @@ namespace Binary_Client_Server
                     Console.WriteLine(seg.ReadSegment());     // wyswietlenie segmentu
                     Console.WriteLine("***********END SENDED MESSAGE");
                     c.Write(c.buffer);  // wysylanie
-                    c.buffer = new byte[32];
+                    c.buffer = new byte[16];
                     c.Read(ref c.buffer);   // odbieranie
                     Console.WriteLine("Message received: {0}", BufferUtilites.ReadMessage(c.buffer)); // wyswiwietlenie segmentu w postaci szesnastkowej
                     seg = new Segment(c.buffer);
                     Console.WriteLine(seg.ReadSegment());     // wyswietlenie segmentu
+                    if(c.ReadAnswer(seg) == -2)
+                    {
+                        Console.WriteLine("OVERFLOW");
+                    }
+                    else
                     Console.WriteLine("Serwer: {0}",c.ReadAnswer(seg));
                     //Console.WriteLine("Message received: {0}", BufferUtilites.ReadMessage(c.buffer));
                 }

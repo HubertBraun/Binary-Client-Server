@@ -25,7 +25,7 @@ namespace Binary_Client_Server
         Multiplicating = 0b010,
         Dividing = 0b011,
         Comparing = 0b110,
-        Powering = 0b111,
+        XOR = 0b111,
         AND = 0b100,
         OR = 0b101
 
@@ -111,7 +111,7 @@ namespace Binary_Client_Server
                         tempOperation = Operation.Comparing;
                         break;
                     case "^":
-                        tempOperation = Operation.Powering;
+                        tempOperation = Operation.XOR;
                         break;
                     case "&":
                         tempOperation = Operation.AND;
@@ -132,9 +132,8 @@ namespace Binary_Client_Server
             }
             else
                 throw new ArgumentException("Nierozpoznana operacja matematyczna");
-            //TODO: chujowe
             Console.WriteLine("arg 0 {0}, arg 1 {1}", arguments[0], arguments[1]);
-            CreateBuffer(Int32.Parse(arguments[0]), Int32.Parse(arguments[2]), tempOperation, Status.autorized, ID.undefined, Factorial.notCalculate);
+            CreateBuffer(Int32.Parse(arguments[0]), Int32.Parse(arguments[2]), tempOperation, Status.autorized, ID.defined, Factorial.notCalculate);
 
         }
 

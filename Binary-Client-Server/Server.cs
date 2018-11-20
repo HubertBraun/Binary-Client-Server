@@ -22,62 +22,75 @@ namespace Binary_Client_Server
             string operation = str[0];
             string status = str[1];
 
-            int number1 = str[4].ConvertStringtoInt();    // pierwsza liczba
-            int number2 = str[5].ConvertStringtoInt();    // druga liczba
+            int number1 = str[6].ConvertStringtoInt();    // pierwsza liczba
+            int number2 = str[7].ConvertStringtoInt();    // druga liczba
             int toReturn = 0;
             //TODO: dodac flagi statusu(operacja mozliwa jesli autorized, else if nie wolno robic)
-            if (str[2] == BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(Status.autorized)).ToDigitString())
+            try
             {
-                switch (operation)
-                {
-                    case "000":    // dodawanie
-                        toReturn = number1 + number2;
-                        Console.WriteLine(number1 + "+" + number2 + "=" + toReturn);
-                        break;
-                    case "001":    // odejmowanie
-                        toReturn = number1 - number2;
-                        Console.WriteLine(number1 + "-" + number2 + "=" + toReturn);
-                        break;
-                    case "010":    // mnozenie
-                        toReturn = number1 * number2;
-                        Console.WriteLine(number1 + "*" + number2 + "=" + toReturn);
-                        break;
-                    case "011":    // dzielenie
-                        toReturn = number1 / number2;
-                        Console.WriteLine(number1 + "/" + number2 + "=" + toReturn);
-                        break;
-                    case "100":    // AND
-                        toReturn = number1 & number2;
-                        Console.WriteLine(number1 + "&" + number2 + "=" + toReturn);
-                        break;
-                    case "101":    // OR 
-                                   //TODO: zmienic or na silnia -> utworzyc metode calculateFactorial() ->zmienic w segmencie or na Factorial
-                        toReturn = number1 | number2;
-                        Console.WriteLine(number1 + "|" + number2 + "=" + toReturn);
-                        break;
-                    case "110":    // porownywanie
-                        if (number1 == number2)
-                            toReturn = 1;
-                        else
-                            toReturn = 0;
+                Console.WriteLine("operacja {0}", str[0]);
+            if (str[1] == BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(Status.autorized)).ToDigitString())
+            {
 
-                        Console.WriteLine(number1 + "==" + number2 + "=" + toReturn);
-                        break;
-                    case "111":    // potegowanie
-                        toReturn = number1 ^ number2;
-                        Console.WriteLine(number1 + "^" + number2 + "=" + toReturn);
-                        break;
-                    default:
-                        Console.WriteLine("Nierozpoznana operacja");
-                        toReturn = -1;
-                        break;
+                    switch (operation)
+                    {
 
-                }
+                        case "000":    // dodawanie
+                            toReturn = number1 + number2;
+                            Console.WriteLine(number1 + "+" + number2 + "=" + toReturn);
+                            break;
+                        case "001":    // odejmowanie
+                            toReturn = number1 - number2;
+                            Console.WriteLine(number1 + "-" + number2 + "=" + toReturn);
+                            break;
+                        case "010":    // mnozenie
+                            toReturn = checked(number1 * number2);
+                            Console.WriteLine(number1 + "*" + number2 + "=" + toReturn);
+                            break;
+                        case "011":    // dzielenie
+                            toReturn = checked(number1 / number2);
+                            Console.WriteLine(number1 + "/" + number2 + "=" + toReturn);
+                            break;
+                        case "100":    // AND
+                            toReturn = number1 & number2;
+                            Console.WriteLine(number1 + "&" + number2 + "=" + toReturn);
+                            break;
+                        case "101":    // OR 
+                                       //TODO: zmienic or na silnia -> utworzyc metode calculateFactorial() ->zmienic w segmencie or na Factorial
+                            toReturn = number1 | number2;
+                            Console.WriteLine(number1 + "|" + number2 + "=" + toReturn);
+                            break;
+                        case "110":    // porownywanie
+                            if (number1 == number2)
+                                toReturn = 1;
+                            else
+                                toReturn = 0;
+
+                            Console.WriteLine(number1 + "==" + number2 + "=" + toReturn);
+                            break;
+                        case "111":    // XOR
+                            toReturn = number1 ^ number2;
+                            Console.WriteLine(number1 + "^" + number2 + "=" + toReturn);
+                            break;
+                        default:
+                            Console.WriteLine("Nierozpoznana operacja");
+                            toReturn = -1;
+                            break;
+
+                    }
+
             }
             else
             {
                 status = "1111";
 
+            }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                status = "1100"; // overflow
+                Console.ReadKey();
             }
             return new Tuple<string, string, int>(operation, status, toReturn);
 
@@ -88,7 +101,7 @@ namespace Binary_Client_Server
 
             Operation op = (Operation)t.Item1.ConvertStringtoInt();
             Status s = (Status)t.Item2.ConvertStringtoInt();
-            if(t.Item3!=-1)
+            if (t.Item3!=-1)
             return new Segment(t.Item3, op, s, ID.defined, Factorial.notCalculate);
             else
                 return new Segment(op, s, ID.defined, Factorial.notCalculate);
@@ -97,8 +110,6 @@ namespace Binary_Client_Server
         public byte[] IDRequest(byte[] buffer)
         {
             Segment seg = new Segment(buffer);
-            Console.WriteLine("Żądanie");
-            Console.WriteLine(seg.ReadSegment());
             return buffer;
         }
 

@@ -24,19 +24,22 @@ namespace Binary_Client_Server
                 s.CreateStream();       // utworzenie strumienia
                 s.buffer = new byte[16];         // ustalenie wielkosci bufora
                 s.Read( ref s.buffer);
-                s.IDRequest(s.buffer);
+                s.Write(s.IDRequest(s.buffer));
+                
                 while (true)
                 {
+                    s.buffer = new byte[16];    //reset buffera
                     s.Read(ref s.buffer);   // odczytanie wiadomosci
                     Segment seg = new Segment(s.buffer);
 
-                    Console.WriteLine(seg.ReadSegment());   //odczytanie segmentu
-                    Console.WriteLine("Message received: {0}", BufferUtilites.ReadMessage(s.buffer));   // wyswiwietlenie segmentu w postaci szesnastkowej
-                    //seg = s.MakeAnswer(s.Calculate(seg));
+                    Console.WriteLine("Message received: {0}", seg.ReadSegment());   //odczytanie segmentu
+                    //Console.WriteLine("Message received: {0}", BufferUtilites.ReadMessage(s.buffer));   // wyswiwietlenie segmentu w postaci szesnastkowej
+                    seg = s.MakeAnswer(s.Calculate(seg));
                     Console.WriteLine(seg.ReadSegment());   //odczytanie segmentu
                     s.buffer = BufferUtilites.ToBuffer(seg._bitAR);
                     s.Write(s.buffer);  //wyslanie odpowiedzi
-                    Console.WriteLine("Message sended: {0}", BufferUtilites.ReadMessage(s.buffer));   // wyswiwietlenie segmentu w postaci szesnastkowej
+                    Console.WriteLine("Message sended: {0}", seg.ReadSegment());   //odczytanie segmentu
+                    //Console.WriteLine("Message sended: {0}", BufferUtilites.ReadMessage(s.buffer));   // wyswiwietlenie segmentu w postaci szesnastkowej
                 }
                 s.Exit();   // bezpieczne zakonczenie polaczenia
             }
