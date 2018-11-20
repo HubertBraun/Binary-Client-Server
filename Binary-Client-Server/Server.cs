@@ -31,15 +31,12 @@ namespace Binary_Client_Server
             int number1 = str[6].ConvertStringtoInt();    // pierwsza liczba
             int number2 = str[7].ConvertStringtoInt();    // druga liczba
             int toReturn = 0;
-            //TODO: dodac flagi statusu(operacja mozliwa jesli autorized, else if nie wolno robic)
             
             
-                Console.WriteLine("operacja {0}", str[0]);
             if (str[4] == "0")  // jesli nie ustawiono silni
             {
                 if (str[1] == BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(Status.autorized)).ToDigitString())
                 {
-                    Console.WriteLine("dasdasdas");
                     switch (operation)
                     {
 
@@ -80,7 +77,6 @@ namespace Binary_Client_Server
                             Console.WriteLine(number1 + "&" + number2 + "=" + toReturn);
                             break;
                         case "101":    // OR 
-                                       //TODO: zmienic or na silnia -> utworzyc metode calculateFactorial() ->zmienic w segmencie or na Factorial
                             toReturn = number1 | number2;
                             Console.WriteLine(number1 + "|" + number2 + "=" + toReturn);
                             break;
@@ -97,6 +93,7 @@ namespace Binary_Client_Server
                             Console.WriteLine(number1 + "^" + number2 + "=" + toReturn);
                             break;
                         default:
+                            //TODO: TRZEBA ODESLAC WIADOMOSC
                             Console.WriteLine("Nierozpoznana operacja");
                             toReturn = -1;
                             break;
@@ -106,7 +103,7 @@ namespace Binary_Client_Server
                 }
                 else
                 {
-                    status = "1111";
+                    status = "1111"; // notautorized
 
                 }
                 return new Tuple<string, string, int>(operation, status, toReturn);
@@ -129,20 +126,21 @@ namespace Binary_Client_Server
 
         }
 
-        public Segment MakeAnswer(Tuple<string, string , int> t)
+        public Segment MakeAnswer(Tuple<string, string , int> t)    // Operation, Status, wynik
         {
 
             Operation op = (Operation)t.Item1.ConvertStringtoInt();
             Status s = (Status)t.Item2.ConvertStringtoInt();
-            if (t.Item3!=-1)
+            if (t.Item3!=-1)    
             return new Segment(t.Item3, op, s, ID.defined, Factorial.notCalculate);
             else
                 return new Segment(op, s, ID.defined, Factorial.notCalculate);
 
         }
-        public byte[] IDRequest(byte[] buffer)
+        public byte[] IDRequest()
         {
-            Segment seg = new Segment(buffer);
+            Segment seg = new Segment(Operation.Adding, Status.autorized, ID.defined, Factorial.notCalculate);
+            buffer = BufferUtilites.ToBuffer(seg._bitAR);
             return buffer;
         }
 

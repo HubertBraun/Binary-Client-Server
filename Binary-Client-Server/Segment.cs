@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-//TODO: impelentacja protokolu
 // POLA OPERACJI                        POLA STATUSU            POLE DLUGOSCI DANYCH(32 bity)       POLE DANYCH
 // 000 - dodawanie						0000                    0x00000002 - 2 zmienne po 1 bicie   zmienna dlugosc                      -							
 // 001 - odejmowanie				    0001                    -                                   
@@ -14,8 +13,8 @@ using System.Threading.Tasks;
 // 011 - dzielenie                      0011                    -                                   
 // 100 - AND                            0100                    -                                   
 // 101 - OR                             0101                    -                                   
-// 110 - porównywanie	0110                    -                                   
-// 111 - potęgowanie   0111                    0xFFFFFFFF - 2 zmienne po 2^31             
+// 110 - porównywanie	0110            -                       -                                   
+// 111 - potęgowanie   0111                                     0xFFFFFFFF - 2 zmienne po 2^31             
 namespace Binary_Client_Server
 {
     public enum Operation
@@ -127,12 +126,8 @@ namespace Binary_Client_Server
             }
             else if(arguments.Length == 2 && arguments[1] == "!")
             {
-                // FractionalFlag = 1
-                //TODO: nie dziala
                 tempOperation = Operation.Adding;
-                Console.WriteLine("Silnia!");
                 CreateBuffer(Int32.Parse(arguments[0]),0, tempOperation, Status.autorized, ID.defined, Factorial.Calculate);
-                Console.WriteLine("arg 0 {0}, arg 1 {1}", arguments[0], arguments[1]);
             }
             else
                 throw new ArgumentException("Nierozpoznana operacja matematyczna");
@@ -275,7 +270,6 @@ namespace Binary_Client_Server
 
 
         }
-        //TODO: Ogarnij te wywolanie Encoding, bo zmienily sie indeksy tablicy
         public string[] Encoding()//zwracanie tablicy stringow po enkodowaniu
         {
             //OOO SSSS DATA32 II F PPPPP ARGS

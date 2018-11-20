@@ -33,13 +33,9 @@ namespace Binary_Client_Server
                 reg = new Regex("(\\d+)\\s*?(\\D)");
                 m = reg.Match(UserInput);
                 groups = m.Groups;
-                Console.WriteLine(m.Groups[1].Value);
-                Console.WriteLine(m.Groups[2].Value);
-                Console.WriteLine(m.Groups[3].Value);
                 str = new string[2];
                 str[0] = m.Groups[1].Value;     // pierwsza liczba
                 str[1] = m.Groups[2].Value;     // operacja matematyczna
-                Console.WriteLine("Silnia!");
                 s = new Segment(str);
             }
 
@@ -48,7 +44,7 @@ namespace Binary_Client_Server
 
         private static void Main(string[] args)     // metoda do sprawdzania dzialania klienta
         {
-
+ 
             Client c = new Client();        // utworzenie obiektu klienta (bezargumentowo do testow)
             try
             {
@@ -56,41 +52,44 @@ namespace Binary_Client_Server
                 c.Createclient();               // utworzenie klienta, port 27015
                 c.CreateStream();               // utworzenie strumienia z serwerem
                 Console.WriteLine("Connected"); // informacja o polaczeniu
-                c.Write(c.IDRequest());
+                c.buffer = c.IDRequest();
+                c.Write(c.buffer);
+                Segment seg = new Segment(c.buffer);
+                Console.WriteLine("Żądanie ID wysłane:\n{0}\n{1}", seg.ReadSegment(), BufferUtilites.ReadBuffer(c.buffer), seg._bitAR.Length);     // wyswietlenie segmentu
                 c.buffer = new byte[16];
                 c.Read(ref c.buffer);
-                Console.WriteLine("ID GET: {0}", BufferUtilites.ReadMessage(c.buffer)); // wyswiwietlenie segmentu w postaci szesnastkowej
-                Segment seg = new Segment(c.buffer);
-                Console.WriteLine(seg.ReadSegment());
-                Console.WriteLine("FOR\n\n");
+                seg = new Segment(c.buffer);
+                Console.WriteLine("ID otrzymane:\n{0}\n{1}", seg.ReadSegment(), BufferUtilites.ReadBuffer(c.buffer), seg._bitAR.Length);     // wyswietlenie segmentu
+
                 string[] UserInput;  //wczytanie danych do wyslania
+
+               //TODO: WAZNE - PRZERWANIE PETLI
                 while (true)
                 {
                     UserInput = ReadUserInput();
                     seg = new Segment(UserInput);
 
-                    Console.WriteLine(seg.ReadSegment());     // wyswietlenie segmentu
                     c.buffer = BufferUtilites.ToBuffer(seg._bitAR);   
-                    Console.WriteLine("Message sended: {0}", BufferUtilites.ReadMessage(c.buffer)); // wyswiwietlenie segmentu w postaci szesnastkowej
-                    Console.WriteLine(seg.ReadSegment());     // wyswietlenie segmentu
-                    Console.WriteLine("***********END SENDED MESSAGE");
                     c.Write(c.buffer);  // wysylanie
+                    Console.WriteLine("Segment wysłany:\n{0}\n{1}", seg.ReadSegment(), BufferUtilites.ReadBuffer(c.buffer), seg._bitAR.Length);     // wyswietlenie segmentu
                     c.buffer = new byte[16];
                     c.Read(ref c.buffer);   // odbieranie
-                    Console.WriteLine("Message received: {0}", BufferUtilites.ReadMessage(c.buffer)); // wyswiwietlenie segmentu w postaci szesnastkowej
                     seg = new Segment(c.buffer);
-                    Console.WriteLine(seg.ReadSegment());     // wyswietlenie segmentu
-                    if(c.ReadAnswer(seg) == -2)
+                    Console.WriteLine("Segment otrzymany:\n{0}\n{1}", seg.ReadSegment(), BufferUtilites.ReadBuffer(c.buffer), seg._bitAR.Length);     // wyswietlenie segmentu
+
+                    switch(c.ReadAnswer(seg))   // wyswietlenie odpowiedzi od serwera
                     {
-                        Console.WriteLine("OVERFLOW");
+                        case -2:    
+                            Console.WriteLine("OVERFLOW");
+                            break;
+                        case -3:
+                            Console.WriteLine("NOTALLOWED");
+                            break;
+                        default:
+                            Console.WriteLine("Serwer: {0}", c.ReadAnswer(seg));    // poprawna odpowiedz
+                            break;
                     }
-                    else if (c.ReadAnswer(seg) == -3)
-                    {
-                        Console.WriteLine("NOTALLOWED");
-                    }
-                    else
-                    Console.WriteLine("Serwer: {0}",c.ReadAnswer(seg));
-                    //Console.WriteLine("Message received: {0}", BufferUtilites.ReadMessage(c.buffer));
+
                 }
                 
                 c.Exit();   // bezpieczne zakonczenie polaczenia

@@ -34,27 +34,26 @@ namespace Binary_Client_Server
         public int ReadAnswer(Segment seg)
         {
             string[] str = seg.Encoding();
-            if(str[1] == "1100")
+            if(str[1] == "1100")    // OVERFLOW
             {
                 return -2;
             }
-            else if (str[1] == "1110")
+            else if (str[1] == "1110")  // NOTALLOWED
             {
                 return -3;
             }
 
-            if (str.Length >= 7)
+            if (str.Length >= 7)    // jesli sa 2 argumenty
             {
-                Console.WriteLine(str[6]);
                 string toReturn = str[6];   // miejsce, w ktorym zapisana jest liczba
                 return toReturn.ConvertStringtoInt();
             }
             else
-                return -1;
+                return -1;  // niezidentyfikowany problem
            
         }
        
-        public byte[] IDRequest()
+        public byte[] IDRequest()   
         {
             byte[] buffer;
             Segment seg =  new Segment(Operation.Adding, Status.notautorized, ID.undefined, Factorial.notCalculate);

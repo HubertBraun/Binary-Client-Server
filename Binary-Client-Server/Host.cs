@@ -12,7 +12,6 @@ namespace Binary_Client_Server
 {
     abstract class Host     // klasa po ktorej dziedziczy serwer i klient
     {
-        //TODO: rozwazyc BitArray
         public byte[] buffer;                   // bufor danych
         protected TcpClient client;
         protected const int portNum = 27015;    // port
