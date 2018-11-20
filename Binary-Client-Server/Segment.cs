@@ -42,8 +42,14 @@ namespace Binary_Client_Server
     }
     public enum ID
     {
-        undefined =0b100,
-        defined = 0b111
+        undefined =0b10,
+        defined = 0b11
+    }
+
+    public enum Factorial
+    {
+        notCalculate = 0,
+        Calculate = 1
     }
     public class Segment
     {
@@ -53,6 +59,7 @@ namespace Binary_Client_Server
 
         private BitArray _data_length;//dlugosc pola danych
         private BitArray _id;
+        private string _fac;
         private BitArray _ptrto_arg1_size;
         private BitArray _arg_1;//liczba1
         private BitArray _arg_2;//liczba2
@@ -72,9 +79,9 @@ namespace Binary_Client_Server
             return _bitAR;
         }
 
-        public Segment(int number, Operation op, Status s, ID id)
+        public Segment(int number, Operation op, Status s, ID id, Factorial f)
         {
-            CreateBuffer(number, op, s, id);
+            CreateBuffer(number, op, s, id, f);
 
         }
 
@@ -124,14 +131,14 @@ namespace Binary_Client_Server
             else
                 throw new ArgumentException("Nierozpoznana operacja matematyczna");
 
-            CreateBuffer(Int32.Parse(arguments[0]), Int32.Parse(arguments[2]), tempOperation, Status.autorized, ID.undefined);
+            CreateBuffer(Int32.Parse(arguments[0]), Int32.Parse(arguments[2]), tempOperation, Status.autorized, ID.undefined, Factorial.notCalculate);
 
         }
 
 
             private int CalculateSegmentSize() { return 7 + _arg_1.Length + _arg_2.Length + _data_length.Length + _ptrto_arg1_size.Length; }
 
-        public void CreateBuffer(int a, int b, Operation o, Status s, ID iden )   // dla dwoch liczb
+        public void CreateBuffer(int a, int b, Operation o, Status s, ID iden, Factorial f)   // dla dwoch liczb
         {
             //SSSS OOO DATA32PTR DATA 
             _id = BinaryMinimalizer.ReturnMinimalizedTable((Int32)iden);
@@ -141,6 +148,7 @@ namespace Binary_Client_Server
             _data_length = BinaryMinimalizer.Change(new BitArray(new int[] { _arg_1.Length + _arg_2.Length + 8}));//minimalizacja bitow ptr
             _operation = o;//przypisanie pol
             _status = s;
+            _fac = f.ToString();
             
 
             
@@ -157,6 +165,8 @@ namespace Binary_Client_Server
             bufer += _data_length.ToDigitString();
             //Id
             bufer += _id.ToDigitString();
+            //factorial
+            bufer += _fac;
             //PTR
             string ptr1 = BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(_arg_1.Length)).ToDigitString();
             if (ptr1.Length < 5) ptr1 = ptr1.PadLeft(5, '0');
@@ -168,10 +178,10 @@ namespace Binary_Client_Server
             var temp = new BitArray(bufer.Select(c => c == '1').ToArray());
             _bitAR = new BitArray(temp);
             
-            //OOO SSSS DATA32 III PPPPP ARGS
+            //OOO SSSS DATA32 II F PPPPP ARGS
         }
 
-        public void CreateBuffer(int a, Operation o, Status s, ID iden)      // dla jednej liczby
+        public void CreateBuffer(int a, Operation o, Status s, ID iden, Factorial f)      // dla jednej liczby
         {
             //SSSS OOO DATA32PTR DATA 
 
@@ -182,7 +192,7 @@ namespace Binary_Client_Server
             _data_length = BinaryMinimalizer.Change(new BitArray(new int[] { _arg_1.Length  + 8 }));//minimalizacja bitow ptr
             _operation = o;//przypisanie pol
             _status = s;
-
+            _fac = f.ToString();
             //zamina BitArray na string 5
             string bufer = "";
             //zmiana enum na bity
@@ -196,6 +206,8 @@ namespace Binary_Client_Server
             bufer += _data_length.ToDigitString();
             //Id
             bufer += _id.ToDigitString();
+            //factorial
+            bufer += _fac;
             //PTR
             string ptr1 = BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(_arg_1.Length)).ToDigitString();
             if (ptr1.Length < 5) ptr1 = ptr1.PadLeft(5, '0');
@@ -212,19 +224,20 @@ namespace Binary_Client_Server
         //TODO: Ogarnij te wywolanie Encoding, bo zmienily sie indeksy tablicy
         public string[] Encoding()//zwracanie tablicy stringow po enkodowaniu
         {
-            //OOO SSSS DATA32 III PPPPP ARGS
+            //OOO SSSS DATA32 II F PPPPP ARGS
             var temp = new BitArray(_bitAR);
             string ar = temp.ToDigitString();
-            string[] toReturn = new string[7];
+            string[] toReturn = new string[8];
             toReturn[0] = ar.Substring(0, 3);//operacja
             toReturn[1] = ar.Substring(3, 4);//stan
             toReturn[2] = ar.Substring(7, 32);//dlugosc danych
-            toReturn[3] = ar.Substring(39, 3);//id
-            toReturn[4] = ar.Substring(42, 5);//wskaznik danych arg1
+            toReturn[3] = ar.Substring(39, 2);//id
+            toReturn[4] = ar.Substring(41, 1);//factorial
+            toReturn[5] = ar.Substring(42, 5);//wskaznik danych arg1
             int index_ptr = 0; int length_value = 0;//dl liczby1 ; dl liczby 1 i 2
-            index_ptr = StringUtilities.ConvertStringtoInt(toReturn[4]); length_value = StringUtilities.ConvertStringtoInt(toReturn[2]);
-            toReturn[5] = ar.Substring(47, index_ptr);//liczba1
-            toReturn[6] = ar.Substring(47 + index_ptr, length_value - index_ptr - 8);//liczba2
+            index_ptr = StringUtilities.ConvertStringtoInt(toReturn[5]); length_value = StringUtilities.ConvertStringtoInt(toReturn[2]);
+            toReturn[6] = ar.Substring(47, index_ptr);//liczba1
+            toReturn[7] = ar.Substring(47 + index_ptr, length_value - index_ptr - 8);//liczba2
 
 
             //for (int i = 0; i < temp.Length; i++)
