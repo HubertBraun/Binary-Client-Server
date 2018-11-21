@@ -36,6 +36,7 @@ namespace Binary_Client_Server
         overflow = 0b1100,//przekroczenie zakresu
         notallowed = 0b1110,//niedozwolona operacja np. dzielenie przez zero
         notautorized = 0b1111, // brak id
+        exit = 0b1001
         //notdefined = 0b1111
         
     }
@@ -141,7 +142,7 @@ namespace Binary_Client_Server
 
         private int CalculateSegmentSize() { return 7 + _arg_1.Length + _arg_2.Length + _data_length.Length + _ptrto_arg1_size.Length; }
 
-        public void CreateBuffer(Operation o, Status s, ID iden, Factorial f)   // bez argumentow
+        public void CreateBuffer(Operation o, Status s, ID iden, Factorial f)   // dla dwoch liczb
         {
             //SSSS OOO DATA32PTR DATA 
             _id = BinaryMinimalizer.ReturnMinimalizedTable((Int32)iden);
@@ -182,6 +183,7 @@ namespace Binary_Client_Server
             //zamina string na bitarray
             var temp = new BitArray(bufer.Select(c => c == '1').ToArray());
             _bitAR = new BitArray(temp);
+            changeTo();
 
             //OOO SSSS DATA32 II F PPPPP ARGS
         }
@@ -226,31 +228,30 @@ namespace Binary_Client_Server
             //zamina string na bitarray
             var temp = new BitArray(bufer.Select(c => c == '1').ToArray());
             _bitAR = new BitArray(temp);
-            
+            changeTo();
+
             //OOO SSSS DATA32 II F PPPPP ARGS
         }
 
         public void CreateBuffer(int a, Operation o, Status s, ID iden, Factorial f)      // dla jednej liczby
         {
             //SSSS OOO DATA32PTR DATA 
+
+            
             _id = BinaryMinimalizer.ReturnMinimalizedTable((Int32)iden);
             _arg_1 = BinaryMinimalizer.ReturnMinimalizedTable(a);//zminimalizowanie i zamiana liczb na ciag bitow
-            //_arg_2 = BinaryMinimalizer.ReturnMinimalizedTable(0);
             _ptrto_arg1_size = BinaryMinimalizer.ReturnMinimalizedTable(_arg_1.Length);
-            _data_length = BinaryMinimalizer.Change(new BitArray(new int[] { _arg_1.Length + 8 }));//minimalizacja bitow ptr
+            _data_length = BinaryMinimalizer.Change(new BitArray(new int[] { _arg_1.Length  + 8 }));//minimalizacja bitow ptr
             _operation = o;//przypisanie pol
             _status = s;
             _fac = Convert.ToString((int)f).ToString();
-
-
-
             //zamina BitArray na string 5
             string bufer = "";
-            //Operacja
+            //zmiana enum na bity
             string op = BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(_operation)).ToDigitString();
             if (op.Length < 3) op = op.PadLeft(3, '0');
             bufer += op;
-
+          
             //Status
             bufer += BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(_status)).ToDigitString();
             //dane
@@ -269,9 +270,7 @@ namespace Binary_Client_Server
             //zamina string na bitarray
             var temp = new BitArray(bufer.Select(c => c == '1').ToArray());
             _bitAR = new BitArray(temp);
-            //Console.WriteLine("Dlugosc {0}", _bitAR.Length);
-            //OOO SSSS DATA32 II F PPPPP ARGS
-
+            changeTo();
 
         }
         public string[] Encoding()//zwracanie tablicy stringow po enkodowaniu
@@ -309,6 +308,7 @@ namespace Binary_Client_Server
 
 
 
+
         public string ReadSegment()
         {
             string[] temp = this.Encoding();
@@ -331,6 +331,23 @@ namespace Binary_Client_Server
 
 
 
+
+        private void changeTo()
+        {
+            if (_bitAR.Length % 8 != 0)
+            {
+                int index = _bitAR.Length;
+                do
+                {
+                    index++;
+                } while (index % 8 != 0);
+                string temp = _bitAR.ToDigitString();
+                temp = temp.PadRight(index, '0');
+                var tab = new BitArray(temp.Select(c => c == '1').ToArray());
+                _bitAR = new BitArray(tab);
+
+            }
+        }
 
     }
 
