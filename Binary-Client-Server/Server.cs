@@ -143,6 +143,17 @@ namespace Binary_Client_Server
             buffer = BufferUtilites.ToBuffer(seg._bitAR);
             return buffer;
         }
+        public bool CheckExit(Segment seg)
+        {
+            string[] temp = seg.Encoding();
+            if (temp[1] == "1001")
+            {
+                return true;
+            }
+            else
+                return false;
+
+        }
 
     }
 }

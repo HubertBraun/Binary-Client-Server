@@ -88,6 +88,12 @@ namespace Binary_Client_Server
 
         public Segment(string[] arguments)
         {
+            if(arguments[0] == "exit")
+            {
+                CreateBuffer(0,0,Operation.Adding, Status.exit, ID.defined, Factorial.Calculate);
+                return;
+            }
+
             if (arguments.Length < 2  || arguments.Length > 3 )
                 throw new ArgumentException("Nieprawidłowa liczba argumentów");
             Operation tempOperation = Operation.Adding;
@@ -142,7 +148,7 @@ namespace Binary_Client_Server
 
         private int CalculateSegmentSize() { return 7 + _arg_1.Length + _arg_2.Length + _data_length.Length + _ptrto_arg1_size.Length; }
 
-        public void CreateBuffer(Operation o, Status s, ID iden, Factorial f)   // dla dwoch liczb
+        public void CreateBuffer(Operation o, Status s, ID iden, Factorial f)   // bez argumentow
         {
             //SSSS OOO DATA32PTR DATA 
             _id = BinaryMinimalizer.ReturnMinimalizedTable((Int32)iden);
@@ -175,7 +181,6 @@ namespace Binary_Client_Server
             string ptr1 = BinaryMinimalizer.ReturnMinimalizedTable(0).ToDigitString();
             if (ptr1.Length < 5) ptr1 = ptr1.PadLeft(5, '0');
             bufer += ptr1;
-
             //args
             // bufer += _arg_1.ToDigitString();
             // bufer += _arg_2.ToDigitString();
@@ -183,7 +188,7 @@ namespace Binary_Client_Server
             //zamina string na bitarray
             var temp = new BitArray(bufer.Select(c => c == '1').ToArray());
             _bitAR = new BitArray(temp);
-            changeTo();
+            //changeTo();
 
             //OOO SSSS DATA32 II F PPPPP ARGS
         }
@@ -228,7 +233,7 @@ namespace Binary_Client_Server
             //zamina string na bitarray
             var temp = new BitArray(bufer.Select(c => c == '1').ToArray());
             _bitAR = new BitArray(temp);
-            changeTo();
+            //changeTo();
 
             //OOO SSSS DATA32 II F PPPPP ARGS
         }
@@ -270,7 +275,7 @@ namespace Binary_Client_Server
             //zamina string na bitarray
             var temp = new BitArray(bufer.Select(c => c == '1').ToArray());
             _bitAR = new BitArray(temp);
-            changeTo();
+            //changeTo();
 
         }
         public string[] Encoding()//zwracanie tablicy stringow po enkodowaniu
@@ -331,23 +336,24 @@ namespace Binary_Client_Server
 
 
 
-
-        private void changeTo()
-        {
-            if (_bitAR.Length % 8 != 0)
-            {
-                int index = _bitAR.Length;
-                do
+        /*
+                private void changeTo()
                 {
-                    index++;
-                } while (index % 8 != 0);
-                string temp = _bitAR.ToDigitString();
-                temp = temp.PadRight(index, '0');
-                var tab = new BitArray(temp.Select(c => c == '1').ToArray());
-                _bitAR = new BitArray(tab);
+                    if (_bitAR.Length % 8 != 0)
+                    {
+                        int index = _bitAR.Length;
+                        do
+                        {
+                            index++;
+                        } while (index % 8 != 0);
+                        string temp = _bitAR.ToDigitString();
+                        temp = temp.PadRight(index, '0');
+                        var tab = new BitArray(temp.Select(c => c == '1').ToArray());
+                        _bitAR = new BitArray(tab);
 
-            }
-        }
+                    }
+                }
+                */
 
     }
 

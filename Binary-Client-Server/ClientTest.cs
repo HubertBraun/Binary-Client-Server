@@ -14,9 +14,16 @@ namespace Binary_Client_Server
             Regex reg = new Regex("(\\d+)\\s*?(\\D)\\s*?(\\d+)");
             string UserInput = Console.ReadLine();  // wczytanie danych do wyslania
             Segment s;
+            string[] str = new string[1];
+            if (UserInput.ToLower() == "exit")
+            {
+                str[0] = "exit";
+                s = new Segment(str);
+                
+                return str;
+            }
             Match m = reg.Match(UserInput);
             GroupCollection groups = m.Groups;
-            string[] str = new string[1];
             if (m.Groups.Count == 4)
             {
                 //Console.WriteLine(m.Groups[1].Value);
@@ -71,6 +78,11 @@ namespace Binary_Client_Server
 
                     c.buffer = BufferUtilites.ToBuffer(seg._bitAR);   
                     c.Write(c.buffer);  // wysylanie
+                    if(UserInput[0] == "exit")
+                    {
+                        Console.WriteLine("EXIT!");
+                        break;
+                    }
                     Console.WriteLine("Segment wysłany:\n{0}\n{1}", seg.ReadSegment(), BufferUtilites.ReadBuffer(c.buffer), seg._bitAR.Length);     // wyswietlenie segmentu
                     c.buffer = new byte[16];
                     c.Read(ref c.buffer);   // odbieranie
