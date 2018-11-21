@@ -42,6 +42,7 @@ namespace Binary_Client_Server
                     s.buffer = BufferUtilites.ToBuffer(seg._bitAR);
                     s.Write(s.buffer);  //wyslanie odpowiedzi
                     Console.WriteLine("Segment wysłany:\n{0}\n{1}", seg.ReadSegment(), BufferUtilites.ReadBuffer(s.buffer), seg._bitAR.Length);     // wyswietlenie segmentu
+                    //Console.WriteLine("Długość {0}", seg._bitAR.Length);
                 }
                 s.Exit();   // bezpieczne zakonczenie polaczenia
             }

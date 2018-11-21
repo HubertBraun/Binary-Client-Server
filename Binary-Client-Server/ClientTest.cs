@@ -19,9 +19,9 @@ namespace Binary_Client_Server
             string[] str = new string[1];
             if (m.Groups.Count == 4)
             {
-                Console.WriteLine(m.Groups[1].Value);
-                Console.WriteLine(m.Groups[2].Value);
-                Console.WriteLine(m.Groups[3].Value);
+                //Console.WriteLine(m.Groups[1].Value);
+                //Console.WriteLine(m.Groups[2].Value);
+                //Console.WriteLine(m.Groups[3].Value);
                 str = new string[3];
                 str[0] = m.Groups[1].Value;     // pierwsza liczba
                 str[1] = m.Groups[2].Value;     // operacja matematyczna

@@ -141,7 +141,7 @@ namespace Binary_Client_Server
 
         private int CalculateSegmentSize() { return 7 + _arg_1.Length + _arg_2.Length + _data_length.Length + _ptrto_arg1_size.Length; }
 
-        public void CreateBuffer(Operation o, Status s, ID iden, Factorial f)   // dla dwoch liczb
+        public void CreateBuffer(Operation o, Status s, ID iden, Factorial f)   // bez argumentow
         {
             //SSSS OOO DATA32PTR DATA 
             _id = BinaryMinimalizer.ReturnMinimalizedTable((Int32)iden);
@@ -233,22 +233,24 @@ namespace Binary_Client_Server
         public void CreateBuffer(int a, Operation o, Status s, ID iden, Factorial f)      // dla jednej liczby
         {
             //SSSS OOO DATA32PTR DATA 
-
-            
             _id = BinaryMinimalizer.ReturnMinimalizedTable((Int32)iden);
             _arg_1 = BinaryMinimalizer.ReturnMinimalizedTable(a);//zminimalizowanie i zamiana liczb na ciag bitow
+            //_arg_2 = BinaryMinimalizer.ReturnMinimalizedTable(0);
             _ptrto_arg1_size = BinaryMinimalizer.ReturnMinimalizedTable(_arg_1.Length);
-            _data_length = BinaryMinimalizer.Change(new BitArray(new int[] { _arg_1.Length  + 8 }));//minimalizacja bitow ptr
+            _data_length = BinaryMinimalizer.Change(new BitArray(new int[] { _arg_1.Length + 8 }));//minimalizacja bitow ptr
             _operation = o;//przypisanie pol
             _status = s;
             _fac = Convert.ToString((int)f).ToString();
+
+
+
             //zamina BitArray na string 5
             string bufer = "";
-            //zmiana enum na bity
+            //Operacja
             string op = BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(_operation)).ToDigitString();
             if (op.Length < 3) op = op.PadLeft(3, '0');
             bufer += op;
-          
+
             //Status
             bufer += BinaryMinimalizer.ReturnMinimalizedTable(Convert.ToInt32(_status)).ToDigitString();
             //dane
@@ -267,6 +269,8 @@ namespace Binary_Client_Server
             //zamina string na bitarray
             var temp = new BitArray(bufer.Select(c => c == '1').ToArray());
             _bitAR = new BitArray(temp);
+            //Console.WriteLine("Dlugosc {0}", _bitAR.Length);
+            //OOO SSSS DATA32 II F PPPPP ARGS
 
 
         }
