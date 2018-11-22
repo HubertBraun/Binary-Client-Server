@@ -159,6 +159,7 @@ namespace Binary_Client_Server
             bufer += _arg_1;
             bufer += _arg_2;
 
+            bufer = ModifyStringSize(bufer);
             _ByteArray = Encoding.ASCII.GetBytes(bufer);
             Console.WriteLine("Buffer: {0}",BufferUtilites.ReadBuffer(_ByteArray));
         }
@@ -189,6 +190,7 @@ namespace Binary_Client_Server
             bufer += _ptrto_arg1_size;
             bufer += _arg_1;
 
+            bufer = ModifyStringSize(bufer);
             _ByteArray = Encoding.ASCII.GetBytes(bufer);
 
 
@@ -216,7 +218,9 @@ namespace Binary_Client_Server
             if (_ptrto_arg1_size.Length < 5) _ptrto_arg1_size = _ptrto_arg1_size.PadLeft(5, '0');
             bufer += _ptrto_arg1_size;
 
+            bufer = ModifyStringSize(bufer);
             _ByteArray = Encoding.ASCII.GetBytes(bufer);
+           
         }
 
         public String[] ReturnEncoder()
@@ -256,6 +260,24 @@ namespace Binary_Client_Server
             }
 
             return Builder.ToString();
+        }
+
+
+        private string ModifyStringSize(string s)
+        {
+            string temp = s;
+            
+            if(temp.Length%8 != 0)
+            {
+                int index = temp.Length;
+                do
+                {
+                    index++;
+                } while (index % 8 != 0);
+
+                temp = temp.PadRight(index, '0');
+            }
+            return temp;
         }
 
 

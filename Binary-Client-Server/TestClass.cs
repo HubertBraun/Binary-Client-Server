@@ -52,17 +52,20 @@ namespace Binary_Client_Server
             
             try
             {
-                var seg = new String[3];
-                seg[0] = "2";
-                seg[1] = "+";
-                seg[2] = "2";
-                var s = new SegmentRepaired(seg);
-                var seks = s.ReturnEncoder();
-                foreach(var x in seks) Console.WriteLine(x);
-                //string result = System.Text.Encoding.UTF8.GetString(s._BitAR);
-                //Console.WriteLine("Kocham mame");
-                //Console.WriteLine(result);
+                string s = "0011";
 
+                if (s.Length % 8 != 0)
+                {
+                    int index = s.Length;
+                    do
+                    {
+                        index++;
+                    } while (index % 8 != 0);
+
+                    s = s.PadRight(index, '0');
+                }
+                Console.WriteLine(s);
+                Console.ReadLine();
             }
             catch (Exception e)
             {

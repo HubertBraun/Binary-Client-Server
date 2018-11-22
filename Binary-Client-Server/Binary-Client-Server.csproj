@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>Binary_Client_Server.ServerTest</StartupObject>
+    <StartupObject>Binary_Client_Server.TestClass</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
