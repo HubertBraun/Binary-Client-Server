@@ -59,7 +59,7 @@ namespace Binary_Client_Server
             //TODO: 0 argumentow
             Segment seg = new Segment(0, 0, Operation.Adding, Status.notautorized, ID.undefined, Factorial.notCalculate);
             buffer = seg._ByteArray.ToArray();
-
+            Console.WriteLine("BUFF: {0}", BufferUtilites.ReadBuffer(seg._ByteArray));
             return buffer;
         }
 

@@ -26,9 +26,6 @@ namespace Binary_Client_Server
             GroupCollection groups = m.Groups;
             if (m.Groups.Count == 4)
             {
-                //Console.WriteLine(m.Groups[1].Value);
-                //Console.WriteLine(m.Groups[2].Value);
-                //Console.WriteLine(m.Groups[3].Value);
                 str = new string[3];
                 str[0] = m.Groups[1].Value;     // pierwsza liczba
                 str[1] = m.Groups[2].Value;     // operacja matematyczna
@@ -70,7 +67,6 @@ namespace Binary_Client_Server
 
                 string[] UserInput;  //wczytanie danych do wyslania
 
-               //TODO: WAZNE - PRZERWANIE PETLI
                 while (true)
                 {
                     UserInput = ReadUserInput();

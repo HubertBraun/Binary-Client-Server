@@ -132,7 +132,7 @@ namespace Binary_Client_Server
             Operation op = (Operation)t.Item1.ConvertStringtoInt();
             Status s = (Status)t.Item2.ConvertStringtoInt();
             if (t.Item3!=-1)    //TODO: jeden argument
-            return new Segment(0,t.Item3, op, s, ID.defined, Factorial.notCalculate);
+            return new Segment(t.Item3,0, op, s, ID.defined, Factorial.notCalculate);
             else                //TODO: bez argumentow
                 return new Segment(0,0,op, s, ID.defined, Factorial.notCalculate);
 

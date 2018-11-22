@@ -52,20 +52,7 @@ namespace Binary_Client_Server
             
             try
             {
-                string s = "0011";
 
-                if (s.Length % 8 != 0)
-                {
-                    int index = s.Length;
-                    do
-                    {
-                        index++;
-                    } while (index % 8 != 0);
-
-                    s = s.PadRight(index, '0');
-                }
-                Console.WriteLine(s);
-                Console.ReadLine();
             }
             catch (Exception e)
             {

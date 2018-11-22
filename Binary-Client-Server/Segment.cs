@@ -143,25 +143,27 @@ namespace Binary_Client_Server
             _fac = Convert.ToString(Convert.ToInt32(f), 2);
             _ptrto_arg1_size = Convert.ToString(_arg_1.Length, 2);
             _data_length = Convert.ToString(_arg_1.Length + _arg_2.Length + 8, 2);
-
             //zamina BitArray na string 5
-            string bufer = "";
+            string str = "";
 
             if (_operation.Length < 3) _operation = _operation.PadLeft(3, '0');
-            bufer += _operation;
-            bufer += _status;
+            str += _operation;
+            str += _status;
             if (_data_length.Length < 32) _data_length = _data_length.PadLeft(32, '0');
-            bufer += _data_length;
-            bufer += _id;
-            bufer += _fac;
+            str += _data_length;
+            str += _id;
+            str += _fac;
             if (_ptrto_arg1_size.Length < 5) _ptrto_arg1_size = _ptrto_arg1_size.PadLeft(5, '0');
-            bufer += _ptrto_arg1_size;
-            bufer += _arg_1;
-            bufer += _arg_2;
-
-            bufer = ModifyStringSize(bufer);
-            _ByteArray = Encoding.ASCII.GetBytes(bufer);
-            Console.WriteLine("Buffer: {0}",BufferUtilites.ReadBuffer(_ByteArray));
+            str += _ptrto_arg1_size;
+            str += _arg_1;
+            str += _arg_2;
+            str = ModifyStringSize(str);
+            //_ByteArray = Encoding.ASCII.GetBytes(bufer);
+            var bytesAsStrings =
+            str.Select((c, i) => new { Char = c, Index = i })
+            .GroupBy(x => x.Index / 8)
+            .Select(g => new string(g.Select(x => x.Char).ToArray()));
+            _ByteArray = bytesAsStrings.Select(y => Convert.ToByte(y, 2)).ToArray();
         }
 
 
@@ -177,22 +179,25 @@ namespace Binary_Client_Server
             _data_length = Convert.ToString(_arg_1.Length + 8, 2);
 
             //zamina BitArray na string 5
-            string bufer = "";
+            string str = "";
 
             if (_operation.Length < 3) _operation = _operation.PadLeft(3, '0');
-            bufer += _operation;
-            bufer += _status;
+            str += _operation;
+            str += _status;
             if (_data_length.Length < 32) _data_length = _data_length.PadLeft(32, '0');
-            bufer += _data_length;
-            bufer += _id;
-            bufer += _fac;
+            str += _data_length;
+            str += _id;
+            str += _fac;
             if (_ptrto_arg1_size.Length < 5) _ptrto_arg1_size = _ptrto_arg1_size.PadLeft(5, '0');
-            bufer += _ptrto_arg1_size;
-            bufer += _arg_1;
+            str += _ptrto_arg1_size;
+            str += _arg_1;
 
-            bufer = ModifyStringSize(bufer);
-            _ByteArray = Encoding.ASCII.GetBytes(bufer);
-
+            str = ModifyStringSize(str);
+            var bytesAsStrings =
+            str.Select((c, i) => new { Char = c, Index = i })
+            .GroupBy(x => x.Index / 8)
+            .Select(g => new string(g.Select(x => x.Char).ToArray()));
+            _ByteArray = bytesAsStrings.Select(y => Convert.ToByte(y, 2)).ToArray();
 
         }
 
@@ -206,37 +211,91 @@ namespace Binary_Client_Server
             _data_length = Convert.ToString(8, 2);
 
             //zamina BitArray na string 5
-            string bufer = "";
+            string str = "";
 
             if (_operation.Length < 3) _operation = _operation.PadLeft(3, '0');
-            bufer += _operation;
-            bufer += _status;
+            str += _operation;
+            str += _status;
             if (_data_length.Length < 32) _data_length = _data_length.PadLeft(32, '0');
-            bufer += _data_length;
-            bufer += _id;
-            bufer += _fac;
+            str += _data_length;
+            str += _id;
+            str += _fac;
             if (_ptrto_arg1_size.Length < 5) _ptrto_arg1_size = _ptrto_arg1_size.PadLeft(5, '0');
-            bufer += _ptrto_arg1_size;
+            str += _ptrto_arg1_size;
 
-            bufer = ModifyStringSize(bufer);
-            _ByteArray = Encoding.ASCII.GetBytes(bufer);
-           
+            str = ModifyStringSize(str);
+            var bytesAsStrings =
+            str.Select((c, i) => new { Char = c, Index = i })
+            .GroupBy(x => x.Index / 8)
+            .Select(g => new string(g.Select(x => x.Char).ToArray()));
+            _ByteArray = bytesAsStrings.Select(y => Convert.ToByte(y, 2)).ToArray();
+        }
+
+        private char GetBit(byte b, int bitNumber)
+        {
+            bool temp = (b & (1 << (7-bitNumber))) != 0;
+            if (temp)
+            {
+                return '1';
+            }
+            else
+                return '0';
         }
 
         public String[] ReturnEncoder()
         {
-            var toReturn = new String[8];
-            var ar = System.Text.Encoding.UTF8.GetString(_ByteArray);
-            toReturn[0] = ar.Substring(0, 3);//operacja
-            toReturn[1] = ar.Substring(3, 4);//stan
-            toReturn[2] = ar.Substring(7, 32);//dlugosc danych
-            toReturn[3] = ar.Substring(39, 2);//id
-            toReturn[4] = ar.Substring(41, 1);//factorial
-            toReturn[5] = ar.Substring(42, 5);//wskaznik danych arg1
-            int index_ptr = 0; int length_value = 0;//dl liczby1 ; dl liczby 1 i 2
-            index_ptr = StringUtilities.ConvertStringtoInt(toReturn[5]); length_value = StringUtilities.ConvertStringtoInt(toReturn[2]);
-            toReturn[6] = ar.Substring(47, index_ptr);//liczba1
-            toReturn[7] = ar.Substring(47 + index_ptr, length_value - index_ptr - 8);//liczba2
+            string[] toReturn = new String[8];
+
+            int i = 0, j = 0;
+            for (; i < 3; i++)
+            {
+                j = i % 8;
+                toReturn[0] += GetBit(_ByteArray[i/8], j);    //operacja
+            }
+            for (; i < 7; i++)
+            {
+                j = i % 8;
+                toReturn[1] += GetBit(_ByteArray[i/8], j);    //stan
+            }
+            for (; i < 39; i++)
+            {
+                j = i % 8;
+                toReturn[2] += GetBit(_ByteArray[i/8], j);    //dlugosc danych
+            }
+            for (; i < 41; i++)
+            {
+                j = i % 8;
+                toReturn[3] += GetBit(_ByteArray[i/8], j);    //id
+            }
+            for (; i < 42; i++)
+            {
+                j = i % 8;
+                toReturn[4] += GetBit(_ByteArray[i/8], j);    //factorial
+            }
+
+            for (; i < 47; i++)
+            {
+                j = i % 8;
+                toReturn[5] += GetBit(_ByteArray[i/8], j);    //wskaznik danych arg1
+            }
+
+
+            int index_ptr = 0; int length_value = 0; //dl liczby1 ; dl liczby 1 i 2
+
+            index_ptr = StringUtilities.ConvertStringtoInt(toReturn[5]);
+            length_value = StringUtilities.ConvertStringtoInt(toReturn[2]);
+
+            for (; i < 47 + index_ptr; i++)     //liczba1
+            {
+                j = i % 8;
+                toReturn[6] += GetBit(_ByteArray[i / 8], j);    //wskaznik danych arg1
+            }
+
+            for (; i < 47 + length_value - 8; i++)     //liczba2
+            {
+                j = i % 8;
+                toReturn[7] += GetBit(_ByteArray[i / 8], j);    //wskaznik danych arg1
+            }
 
             return toReturn;
         }
@@ -286,7 +345,3 @@ namespace Binary_Client_Server
     }
       
     }
-
-
-
-
