@@ -33,7 +33,7 @@ namespace Binary_Client_Server
 
         public int ReadAnswer(Segment seg)
         {
-            string[] str = seg.Encoding();
+            string[] str = seg.ReturnEncoder();
             if(str[1] == "1100")    // OVERFLOW
             {
                 return -2;
@@ -56,8 +56,10 @@ namespace Binary_Client_Server
         public byte[] IDRequest()   
         {
             byte[] buffer;
-            Segment seg =  new Segment(Operation.Adding, Status.notautorized, ID.undefined, Factorial.notCalculate);
-            buffer = BufferUtilites.ToBuffer(seg._bitAR);
+            //TODO: 0 argumentow
+            Segment seg = new Segment(0, 0, Operation.Adding, Status.notautorized, ID.undefined, Factorial.notCalculate);
+            buffer = seg._ByteArray.ToArray();
+
             return buffer;
         }
 

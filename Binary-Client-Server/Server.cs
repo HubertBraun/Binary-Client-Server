@@ -11,7 +11,7 @@ namespace Binary_Client_Server
     {
         private TcpListener listener;   
 
-        public Server() => _IP = System.Net.IPAddress.Parse("192.168.43.138");       // przypisanie adresu (serwer lokalny)
+        public Server() => _IP = System.Net.IPAddress.Parse("127.0.0.1");       // przypisanie adresu (serwer lokalny)
         public void CreateListener() => listener = new TcpListener(_IP, portNum);   // port nasluchowy
         public void StartListen() => listener.Start();      // rozpoczecie nasluchiwania
         public void AccecptClient() => client = listener.AcceptTcpClient();         // akceptacja klienta
@@ -24,7 +24,7 @@ namespace Binary_Client_Server
 
         public Tuple<string, string, int> Calculate(Segment seg)
         {
-            string[] str = seg.Encoding();
+            string[] str = seg.ReturnEncoder();
             string operation = str[0];
             string status = str[1];
 
@@ -131,21 +131,21 @@ namespace Binary_Client_Server
 
             Operation op = (Operation)t.Item1.ConvertStringtoInt();
             Status s = (Status)t.Item2.ConvertStringtoInt();
-            if (t.Item3!=-1)    
-            return new Segment(t.Item3, op, s, ID.defined, Factorial.notCalculate);
-            else
-                return new Segment(op, s, ID.defined, Factorial.notCalculate);
+            if (t.Item3!=-1)    //TODO: jeden argument
+            return new Segment(0,t.Item3, op, s, ID.defined, Factorial.notCalculate);
+            else                //TODO: bez argumentow
+                return new Segment(0,0,op, s, ID.defined, Factorial.notCalculate);
 
         }
         public byte[] IDRequest()
-        {
-            Segment seg = new Segment(Operation.Adding, Status.autorized, ID.defined, Factorial.notCalculate);
-            buffer = BufferUtilites.ToBuffer(seg._bitAR);
+        {       //TODO: bez argumentow
+            Segment seg = new Segment(0,0,Operation.Adding, Status.autorized, ID.defined, Factorial.notCalculate);
+            buffer = seg._ByteArray;
             return buffer;
         }
         public bool CheckExit(Segment seg)
         {
-            string[] temp = seg.Encoding();
+            string[] temp = seg.ReturnEncoder();
             if (temp[1] == "1001")
             {
                 return true;

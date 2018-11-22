@@ -25,12 +25,5 @@ namespace Binary_Client_Server
             return tempString;
         }
 
-        public static byte[] ToBuffer(BitArray bits)
-        {
-            byte[] ret = new byte[(bits.Length - 1) / 8 + 1];
-            bits.CopyTo(ret, 0);
-            return ret;
-
-        }
     }
 }

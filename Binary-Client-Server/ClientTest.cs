@@ -62,11 +62,11 @@ namespace Binary_Client_Server
                 c.buffer = c.IDRequest();
                 c.Write(c.buffer);
                 Segment seg = new Segment(c.buffer);
-                Console.WriteLine("Żądanie ID wysłane:\n{0}\n{1}", seg.ReadSegment(), BufferUtilites.ReadBuffer(c.buffer), seg._BitAR.Length);     // wyswietlenie segmentu
+                Console.WriteLine("Żądanie ID wysłane:\n{0}\n{1}", seg.ReadSegment(), BufferUtilites.ReadBuffer(c.buffer), seg._ByteArray.Length);     // wyswietlenie segmentu
                 c.buffer = new byte[16];
                 c.Read(ref c.buffer);
                 seg = new Segment(c.buffer);
-                Console.WriteLine("ID otrzymane:\n{0}\n{1}", seg.ReadSegment(), BufferUtilites.ReadBuffer(c.buffer), seg._BitAR.Length);     // wyswietlenie segmentu
+                Console.WriteLine("ID otrzymane:\n{0}\n{1}", seg.ReadSegment(), BufferUtilites.ReadBuffer(c.buffer), seg._ByteArray.Length);     // wyswietlenie segmentu
 
                 string[] UserInput;  //wczytanie danych do wyslania
 
@@ -76,18 +76,18 @@ namespace Binary_Client_Server
                     UserInput = ReadUserInput();
                     seg = new Segment(UserInput);
 
-                    c.buffer = BufferUtilites.ToBuffer(seg._BitAR);   
+                    c.buffer = seg._ByteArray;   
                     c.Write(c.buffer);  // wysylanie
                     if(UserInput[0] == "exit")
                     {
                         Console.WriteLine("EXIT!");
                         break;
                     }
-                    Console.WriteLine("Segment wysłany:\n{0}\n{1}", seg.ReadSegment(), BufferUtilites.ReadBuffer(c.buffer), seg._BitAR.Length);     // wyswietlenie segmentu
+                    Console.WriteLine("Segment wysłany:\n{0}\n{1}", seg.ReadSegment(), BufferUtilites.ReadBuffer(c.buffer), seg._ByteArray.Length);     // wyswietlenie segmentu
                     c.buffer = new byte[16];
                     c.Read(ref c.buffer);   // odbieranie
                     seg = new Segment(c.buffer);
-                    Console.WriteLine("Segment otrzymany:\n{0}\n{1}", seg.ReadSegment(), BufferUtilites.ReadBuffer(c.buffer), seg._BitAR.Length);     // wyswietlenie segmentu
+                    Console.WriteLine("Segment otrzymany:\n{0}\n{1}", seg.ReadSegment(), BufferUtilites.ReadBuffer(c.buffer), seg._ByteArray.Length);     // wyswietlenie segmentu
 
                     switch(c.ReadAnswer(seg))   // wyswietlenie odpowiedzi od serwera
                     {

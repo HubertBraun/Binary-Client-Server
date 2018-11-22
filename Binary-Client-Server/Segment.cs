@@ -62,13 +62,19 @@ namespace Binary_Client_Server
         private string _arg_1;//liczba1
         private string _arg_2;//liczba2
 
-        public byte[] _BitAR;
+        public byte[] _ByteArray;
 
 
         public Segment(byte[] buffer)
         {
-            _BitAR = buffer;
+            _ByteArray = buffer.ToArray();
         }
+        public Segment (int arg1, int ar2g, Operation o, Status s, ID id, Factorial f)
+        {
+            CreateBuffer(arg1, ar2g, o, s, id, f);
+        }
+
+
         public Segment(string[] arguments)
         {
             if (arguments[0] == "exit")
@@ -123,6 +129,9 @@ namespace Binary_Client_Server
                 throw new ArgumentException("Nierozpoznana operacja matematyczna");
 
         }
+
+
+
         public void CreateBuffer(int a, int b, Operation o, Status s, ID iden, Factorial f)   // dla dwoch liczb
         {
 
@@ -150,8 +159,8 @@ namespace Binary_Client_Server
             bufer += _arg_1;
             bufer += _arg_2;
 
-            _BitAR = Encoding.ASCII.GetBytes(bufer);
-
+            _ByteArray = Encoding.ASCII.GetBytes(bufer);
+            Console.WriteLine("Buffer: {0}",BufferUtilites.ReadBuffer(_ByteArray));
         }
 
 
@@ -180,7 +189,7 @@ namespace Binary_Client_Server
             bufer += _ptrto_arg1_size;
             bufer += _arg_1;
 
-            _BitAR = Encoding.ASCII.GetBytes(bufer);
+            _ByteArray = Encoding.ASCII.GetBytes(bufer);
 
 
         }
@@ -207,20 +216,13 @@ namespace Binary_Client_Server
             if (_ptrto_arg1_size.Length < 5) _ptrto_arg1_size = _ptrto_arg1_size.PadLeft(5, '0');
             bufer += _ptrto_arg1_size;
 
-            _BitAR = Encoding.ASCII.GetBytes(bufer);
+            _ByteArray = Encoding.ASCII.GetBytes(bufer);
         }
-
-
-
-
-
-
-
 
         public String[] ReturnEncoder()
         {
             var toReturn = new String[8];
-            var ar = System.Text.Encoding.UTF8.GetString(_BitAR);
+            var ar = System.Text.Encoding.UTF8.GetString(_ByteArray);
             toReturn[0] = ar.Substring(0, 3);//operacja
             toReturn[1] = ar.Substring(3, 4);//stan
             toReturn[2] = ar.Substring(7, 32);//dlugosc danych
@@ -238,7 +240,7 @@ namespace Binary_Client_Server
 
         public string ReadSegment()
         {
-            string[] temp = this.ReturnEncoder();
+            string[] temp = ReturnEncoder();
             StringBuilder Builder = new StringBuilder();
             Builder.Append(0 + ": " + temp[0] + "\t\t" + (Operation)temp[0].ConvertStringtoInt() + "\t\t" + "size: " + temp[0].Length + "\n");
             Builder.Append(1 + ": " + temp[1] + "\t\t" + (Status)temp[1].ConvertStringtoInt() + "\t" + "size: " + temp[1].Length + "\n");

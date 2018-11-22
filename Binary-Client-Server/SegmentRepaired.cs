@@ -164,13 +164,6 @@ namespace Binary_Client_Server
             _BitAR = Encoding.ASCII.GetBytes(bufer);
         }
 
-
-
-
-
-
-
-
         public String[] ReturnEncoder()
         {
             var toReturn = new String[8];

@@ -21,7 +21,6 @@ namespace Binary_Client_Server
         public void CreateStream() => ns = client.GetStream();                      // tworzenie strumienia
         public void Read(ref byte[] buffer) => ns.Read(buffer, 0, buffer.Length);   // wysylanie wiadomosci
         public void Write(byte[] buffer) => ns.Write(buffer, 0, buffer.Length); // odczytywanie wiadomosci
-        //TODO metoda public void setPort(int PortNumer);
 
         public void Exit()
         {
