@@ -1,58 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
-// POLA OPERACJI                        POLA STATUSU            POLE DLUGOSCI DANYCH(32 bity)       POLE DANYCH
-// 000 - dodawanie						0000                    0x00000002 - 2 zmienne po 1 bicie   zmienna dlugosc                      -							
-// 001 - odejmowanie				    0001                    -                                   
-// 010 - mnozenie						0010                    -                                   
-// 011 - dzielenie                      0011                    -                                   
-// 100 - AND                            0100                    -                                   
-// 101 - OR                             0101                    -                                   
-// 110 - porównywanie	0110            -                       -                                   
-// 111 - potęgowanie   0111                                     0xFFFFFFFF - 2 zmienne po 2^31             
 namespace Binary_Client_Server
 {
-    public enum Operation
-    {
-        Adding = 0b000,
-        Substracting = 0b001,
-        Multiplicating = 0b010,
-        Dividing = 0b011,
-        Comparing = 0b110,
-        XOR = 0b111,
-        AND = 0b100,
-        OR = 0b101
 
-    }
 
-    public enum Status
-    {
-        autorized = 0b1000, //poprawne dzialanie
-        overflow = 0b1100,//przekroczenie zakresu
-        notallowed = 0b1110,//niedozwolona operacja np. dzielenie przez zero
-        notautorized = 0b1111, // brak id
-        exit = 0b1001
-        //notdefined = 0b1111
-        
-    }
-    public enum ID
-    {
-        undefined =0b10,
-        defined = 0b11
-    }
 
-    public enum Factorial
+
+    class SegmentRepaired
     {
-        notCalculate = 0,
-        Calculate = 1
-    }
-    public class Segment
-    {
+
         private string _operation;//pole operacji
         private string _status;//pole statusu
         private string _data_length;//dlugosc pola danych
@@ -63,13 +23,7 @@ namespace Binary_Client_Server
         private string _arg_2;//liczba2
 
         public byte[] _BitAR;
-
-
-        public Segment(byte[] buffer)
-        {
-            _BitAR = buffer;
-        }
-        public Segment(string[] arguments)
+        public SegmentRepaired(string[] arguments)
         {
             if (arguments[0] == "exit")
             {
@@ -137,7 +91,7 @@ namespace Binary_Client_Server
 
             //zamina BitArray na string 5
             string bufer = "";
-
+            
             if (_operation.Length < 3) _operation = _operation.PadLeft(3, '0');
             bufer += _operation;
             bufer += _status;
@@ -149,9 +103,9 @@ namespace Binary_Client_Server
             bufer += _ptrto_arg1_size;
             bufer += _arg_1;
             bufer += _arg_2;
-
+            
             _BitAR = Encoding.ASCII.GetBytes(bufer);
-
+            
         }
 
 
@@ -164,7 +118,7 @@ namespace Binary_Client_Server
             _id = Convert.ToString(Convert.ToInt32(iden), 2);
             _fac = Convert.ToString(Convert.ToInt32(f), 2);
             _ptrto_arg1_size = Convert.ToString(_arg_1.Length, 2);
-            _data_length = Convert.ToString(_arg_1.Length + 8, 2);
+            _data_length = Convert.ToString(_arg_1.Length +  8, 2);
 
             //zamina BitArray na string 5
             string bufer = "";
@@ -179,7 +133,7 @@ namespace Binary_Client_Server
             if (_ptrto_arg1_size.Length < 5) _ptrto_arg1_size = _ptrto_arg1_size.PadLeft(5, '0');
             bufer += _ptrto_arg1_size;
             bufer += _arg_1;
-
+      
             _BitAR = Encoding.ASCII.GetBytes(bufer);
 
 
@@ -206,7 +160,7 @@ namespace Binary_Client_Server
             bufer += _fac;
             if (_ptrto_arg1_size.Length < 5) _ptrto_arg1_size = _ptrto_arg1_size.PadLeft(5, '0');
             bufer += _ptrto_arg1_size;
-
+            
             _BitAR = Encoding.ASCII.GetBytes(bufer);
         }
 
@@ -220,7 +174,7 @@ namespace Binary_Client_Server
         public String[] ReturnEncoder()
         {
             var toReturn = new String[8];
-            var ar = System.Text.Encoding.UTF8.GetString(_BitAR);
+            var ar  = System.Text.Encoding.UTF8.GetString(_BitAR);
             toReturn[0] = ar.Substring(0, 3);//operacja
             toReturn[1] = ar.Substring(3, 4);//stan
             toReturn[2] = ar.Substring(7, 32);//dlugosc danych
@@ -234,35 +188,7 @@ namespace Binary_Client_Server
 
             return toReturn;
         }
-
-
-        public string ReadSegment()
-        {
-            string[] temp = this.ReturnEncoder();
-            StringBuilder Builder = new StringBuilder();
-            Builder.Append(0 + ": " + temp[0] + "\t\t" + (Operation)temp[0].ConvertStringtoInt() + "\t\t" + "size: " + temp[0].Length + "\n");
-            Builder.Append(1 + ": " + temp[1] + "\t\t" + (Status)temp[1].ConvertStringtoInt() + "\t" + "size: " + temp[1].Length + "\n");
-            Builder.Append(2 + ": " + temp[2] + "\t" + "size: " + temp[2].Length + "\n");
-            Builder.Append(3 + ": " + temp[3] + "\t\t" + (ID)temp[3].ConvertStringtoInt() + "\t" + "size: " + temp[3].Length + "\n");
-            Builder.Append(4 + ": " + temp[4] + "\t\t" + (Factorial)temp[4].ConvertStringtoInt() + "\t" + "size: " + temp[4].Length + "\n");
-            //factorial
-            //pointer
-
-            for (int i = 5; i < temp.Length; i++)
-            {
-                Builder.Append(i + ": " + temp[i] + "\t" + "size: " + temp[i].Length + "\n");
-            }
-
-            return Builder.ToString();
-        }
-
-
-
-
-    }
-      
     }
 
 
-
-
+}

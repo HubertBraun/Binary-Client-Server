@@ -52,22 +52,16 @@ namespace Binary_Client_Server
             
             try
             {
-                string UserInput = Console.ReadLine();  //wczytanie danych do wyslania
-                Segment s = new Segment(Regex.Split(UserInput, "\\s+"));
-                string[] seg = s.Encoding();
-                foreach (var b in seg) Console.WriteLine(b);
-                string test = s._bitAR.Length.ToString();
-                int i = 0;
-                Console.WriteLine(s._bitAR.Length);
-                foreach (var c in s._bitAR.ToDigitString()) Console.Write(c);
-                Console.WriteLine();
-                foreach (var sx in seg)
-                {
-                    Console.WriteLine(i + ": " + sx + "       size: " + sx.Length);
-                    i++;
-
-                }
-
+                var seg = new String[3];
+                seg[0] = "2";
+                seg[1] = "+";
+                seg[2] = "2";
+                var s = new SegmentRepaired(seg);
+                var seks = s.ReturnEncoder();
+                foreach(var x in seks) Console.WriteLine(x);
+                //string result = System.Text.Encoding.UTF8.GetString(s._BitAR);
+                //Console.WriteLine("Kocham mame");
+                //Console.WriteLine(result);
 
             }
             catch (Exception e)

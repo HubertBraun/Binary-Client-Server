@@ -11,7 +11,7 @@ namespace Binary_Client_Server
     {
         private TcpListener listener;   
 
-        public Server() => _IP = System.Net.IPAddress.Parse("127.0.0.1");       // przypisanie adresu (serwer lokalny)
+        public Server() => _IP = System.Net.IPAddress.Parse("192.168.43.138");       // przypisanie adresu (serwer lokalny)
         public void CreateListener() => listener = new TcpListener(_IP, portNum);   // port nasluchowy
         public void StartListen() => listener.Start();      // rozpoczecie nasluchiwania
         public void AccecptClient() => client = listener.AcceptTcpClient();         // akceptacja klienta
