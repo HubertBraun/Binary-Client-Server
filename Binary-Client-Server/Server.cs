@@ -86,7 +86,7 @@ namespace Binary_Client_Server
                             else
                                 toReturn = 0;
 
-                            Console.WriteLine(number1 + "==" + number2 + "=" + toReturn);
+                            Console.WriteLine(number1 + "=" + number2 + "=" + toReturn);
                             break;
                         case "111":    // XOR
                             toReturn = number1 ^ number2;
@@ -143,15 +143,21 @@ namespace Binary_Client_Server
             buffer = seg._ByteArray;
             return buffer;
         }
-        public bool CheckExit(Segment seg)
+        public string CheckExit(Segment seg)
         {
             string[] temp = seg.ReturnEncoder();
+
+            if (temp[1] == "1001" && temp[6] != "0") // kod bledu
+            {
+                return "EXIT! \n Error " + temp[6] + "," + temp[7];
+            }
+            
             if (temp[1] == "1001")
             {
-                return true;
+                return "EXIT!";
             }
             else
-                return false;
+                return "";
 
         }
 

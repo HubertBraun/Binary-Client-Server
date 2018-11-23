@@ -13,13 +13,10 @@ namespace Binary_Client_Server
         {
             Regex reg = new Regex("(\\d+)\\s*?(\\D)\\s*?(\\d+)");
             string UserInput = Console.ReadLine();  // wczytanie danych do wyslania
-            Segment s;
-            string[] str = new string[1];
+            string[] str = new string[3];
             if (UserInput.ToLower() == "exit")
             {
-                str[0] = "exit";
-                s = new Segment(str);
-                
+                str[0] = "exit";               
                 return str;
             }
             Match m = reg.Match(UserInput);
@@ -30,7 +27,6 @@ namespace Binary_Client_Server
                 str[0] = m.Groups[1].Value;     // pierwsza liczba
                 str[1] = m.Groups[2].Value;     // operacja matematyczna
                 str[2] = m.Groups[3].Value;     // druga liczba
-                s = new Segment(str);
             }
             else
             {
@@ -40,7 +36,6 @@ namespace Binary_Client_Server
                 str = new string[2];
                 str[0] = m.Groups[1].Value;     // pierwsza liczba
                 str[1] = m.Groups[2].Value;     // operacja matematyczna
-                s = new Segment(str);
             }
 
             return str;
@@ -71,8 +66,7 @@ namespace Binary_Client_Server
                 {
                     UserInput = ReadUserInput();
                     seg = new Segment(UserInput);
-
-                    c.buffer = seg._ByteArray;   
+                        c.buffer = seg._ByteArray;   
                     c.Write(c.buffer);  // wysylanie
                     if(UserInput[0] == "exit")
                     {
@@ -105,6 +99,19 @@ namespace Binary_Client_Server
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+                string[] UserError = new string[3];
+                UserError[0] = "exit";
+                UserError[1] = "1";     // komunikat bledu
+                UserError[2] = "1";     // komunikat bledu
+
+                Segment segError = new Segment(UserError);
+
+                c.buffer = segError._ByteArray;
+                c.Write(c.buffer);  // wysylanie
+
+                Console.WriteLine("ERROR EXIT!");
+                
+
                 c.Exit();   // awaryjne zakonczenie polaczenia
             }
             Console.ReadKey();  // zamykanie aplikacji przez wcisniecie dowolnego przycisku

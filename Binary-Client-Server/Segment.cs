@@ -56,9 +56,9 @@ namespace Binary_Client_Server
         private string _operation;//pole operacji
         private string _status;//pole statusu
         private string _data_length;//dlugosc pola danych
-        private string _id;
-        private string _fac;
-        private string _ptrto_arg1_size;
+        private string _id;     // id sesji
+        private string _fac;    // flaga silni
+        private string _ptrto_arg1_size;    // wskaznik na 1 argument
         private string _arg_1;//liczba1
         private string _arg_2;//liczba2
 
@@ -77,7 +77,13 @@ namespace Binary_Client_Server
 
         public Segment(string[] arguments)
         {
-            if (arguments[0] == "exit")
+            if (arguments[0] == "exit" && arguments[1] == "1")
+            {               
+                CreateBuffer(1, 1, Operation.Adding, Status.exit, ID.defined, Factorial.Calculate);
+                return;
+            }
+
+                else if (arguments[0] == "exit")
             {
                 CreateBuffer(0, 0, Operation.Adding, Status.exit, ID.defined, Factorial.Calculate);
                 return;
@@ -102,7 +108,7 @@ namespace Binary_Client_Server
                     case "/":
                         tempOperation = Operation.Dividing;
                         break;
-                    case "==":
+                    case "=":
                         tempOperation = Operation.Comparing;
                         break;
                     case "^":
@@ -130,8 +136,6 @@ namespace Binary_Client_Server
 
         }
 
-
-
         public void CreateBuffer(int a, int b, Operation o, Status s, ID iden, Factorial f)   // dla dwoch liczb
         {
 
@@ -143,7 +147,7 @@ namespace Binary_Client_Server
             _fac = Convert.ToString(Convert.ToInt32(f), 2);
             _ptrto_arg1_size = Convert.ToString(_arg_1.Length, 2);
             _data_length = Convert.ToString(_arg_1.Length + _arg_2.Length + 8, 2);
-            //zamina BitArray na string 5
+
             string str = "";
 
             if (_operation.Length < 3) _operation = _operation.PadLeft(3, '0');
@@ -166,72 +170,7 @@ namespace Binary_Client_Server
             _ByteArray = bytesAsStrings.Select(y => Convert.ToByte(y, 2)).ToArray();
         }
 
-
-        public void CreateBuffer(int a, Operation o, Status s, ID iden, Factorial f)      // dla jednej liczby
-        {
-            //SSSS OOO DATA32PTR DATA 
-            _arg_1 = Convert.ToString(a, 2);
-            _status = Convert.ToString(Convert.ToInt32(s), 2);
-            _operation = Convert.ToString(Convert.ToInt32(o), 2);
-            _id = Convert.ToString(Convert.ToInt32(iden), 2);
-            _fac = Convert.ToString(Convert.ToInt32(f), 2);
-            _ptrto_arg1_size = Convert.ToString(_arg_1.Length, 2);
-            _data_length = Convert.ToString(_arg_1.Length + 8, 2);
-
-            //zamina BitArray na string 5
-            string str = "";
-
-            if (_operation.Length < 3) _operation = _operation.PadLeft(3, '0');
-            str += _operation;
-            str += _status;
-            if (_data_length.Length < 32) _data_length = _data_length.PadLeft(32, '0');
-            str += _data_length;
-            str += _id;
-            str += _fac;
-            if (_ptrto_arg1_size.Length < 5) _ptrto_arg1_size = _ptrto_arg1_size.PadLeft(5, '0');
-            str += _ptrto_arg1_size;
-            str += _arg_1;
-
-            str = ModifyStringSize(str);
-            var bytesAsStrings =
-            str.Select((c, i) => new { Char = c, Index = i })
-            .GroupBy(x => x.Index / 8)
-            .Select(g => new string(g.Select(x => x.Char).ToArray()));
-            _ByteArray = bytesAsStrings.Select(y => Convert.ToByte(y, 2)).ToArray();
-
-        }
-
-        public void CreateBuffer(Operation o, Status s, ID iden, Factorial f)   // bez argumentow
-        {
-            _status = Convert.ToString(Convert.ToInt32(s), 2);
-            _operation = Convert.ToString(Convert.ToInt32(o), 2);
-            _id = Convert.ToString(Convert.ToInt32(iden), 2);
-            _fac = Convert.ToString(Convert.ToInt32(f), 2);
-            _ptrto_arg1_size = Convert.ToString(0, 2);
-            _data_length = Convert.ToString(8, 2);
-
-            //zamina BitArray na string 5
-            string str = "";
-
-            if (_operation.Length < 3) _operation = _operation.PadLeft(3, '0');
-            str += _operation;
-            str += _status;
-            if (_data_length.Length < 32) _data_length = _data_length.PadLeft(32, '0');
-            str += _data_length;
-            str += _id;
-            str += _fac;
-            if (_ptrto_arg1_size.Length < 5) _ptrto_arg1_size = _ptrto_arg1_size.PadLeft(5, '0');
-            str += _ptrto_arg1_size;
-
-            str = ModifyStringSize(str);
-            var bytesAsStrings =
-            str.Select((c, i) => new { Char = c, Index = i })
-            .GroupBy(x => x.Index / 8)
-            .Select(g => new string(g.Select(x => x.Char).ToArray()));
-            _ByteArray = bytesAsStrings.Select(y => Convert.ToByte(y, 2)).ToArray();
-        }
-
-        private char GetBit(byte b, int bitNumber)
+        private char GetBit(byte b, int bitNumber)  // zwraca bit na danym miejscu w bajcie
         {
             bool temp = (b & (1 << (7-bitNumber))) != 0;
             if (temp)
@@ -250,51 +189,51 @@ namespace Binary_Client_Server
             for (; i < 3; i++)
             {
                 j = i % 8;
-                toReturn[0] += GetBit(_ByteArray[i/8], j);    //operacja
+                toReturn[0] += GetBit(_ByteArray[i/8], j);    // operacja
             }
             for (; i < 7; i++)
             {
                 j = i % 8;
-                toReturn[1] += GetBit(_ByteArray[i/8], j);    //stan
+                toReturn[1] += GetBit(_ByteArray[i/8], j);    // stan
             }
             for (; i < 39; i++)
             {
                 j = i % 8;
-                toReturn[2] += GetBit(_ByteArray[i/8], j);    //dlugosc danych
+                toReturn[2] += GetBit(_ByteArray[i/8], j);    // dlugosc danych
             }
             for (; i < 41; i++)
             {
                 j = i % 8;
-                toReturn[3] += GetBit(_ByteArray[i/8], j);    //id
+                toReturn[3] += GetBit(_ByteArray[i/8], j);    // id
             }
             for (; i < 42; i++)
             {
                 j = i % 8;
-                toReturn[4] += GetBit(_ByteArray[i/8], j);    //factorial
+                toReturn[4] += GetBit(_ByteArray[i/8], j);    // flaga silnii
             }
 
             for (; i < 47; i++)
             {
                 j = i % 8;
-                toReturn[5] += GetBit(_ByteArray[i/8], j);    //wskaznik danych arg1
+                toReturn[5] += GetBit(_ByteArray[i/8], j);    // wskaznik danych arg1
             }
 
 
-            int index_ptr = 0; int length_value = 0; //dl liczby1 ; dl liczby 1 i 2
+            int index_ptr = 0,  length_value = 0;    // dlugosc arg1, dlugosc arg2 
 
             index_ptr = StringUtilities.ConvertStringtoInt(toReturn[5]);
             length_value = StringUtilities.ConvertStringtoInt(toReturn[2]);
 
-            for (; i < 47 + index_ptr; i++)     //liczba1
+            for (; i < 47 + index_ptr; i++)     // arg1
             {
                 j = i % 8;
-                toReturn[6] += GetBit(_ByteArray[i / 8], j);    //wskaznik danych arg1
+                toReturn[6] += GetBit(_ByteArray[i / 8], j);    // wskaznik danych
             }
 
-            for (; i < 47 + length_value - 8; i++)     //liczba2
+            for (; i < 47 + length_value - 8; i++)     // arg2
             {
                 j = i % 8;
-                toReturn[7] += GetBit(_ByteArray[i / 8], j);    //wskaznik danych arg1
+                toReturn[7] += GetBit(_ByteArray[i / 8], j);    // wskaznik danych arg1
             }
 
             return toReturn;
@@ -310,8 +249,6 @@ namespace Binary_Client_Server
             Builder.Append(2 + ": " + temp[2] + "\t" + "size: " + temp[2].Length + "\n");
             Builder.Append(3 + ": " + temp[3] + "\t\t" + (ID)temp[3].ConvertStringtoInt() + "\t" + "size: " + temp[3].Length + "\n");
             Builder.Append(4 + ": " + temp[4] + "\t\t" + (Factorial)temp[4].ConvertStringtoInt() + "\t" + "size: " + temp[4].Length + "\n");
-            //factorial
-            //pointer
 
             for (int i = 5; i < temp.Length; i++)
             {
@@ -344,4 +281,4 @@ namespace Binary_Client_Server
 
     }
       
-    }
+ }

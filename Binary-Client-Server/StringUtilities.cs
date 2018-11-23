@@ -40,25 +40,5 @@ namespace Binary_Client_Server
             }
             return res;
         }
-
-        public static BitArray BytetoBinTransfer(byte[] bt)
-        {
-            BitArray b;
-            string strBin = string.Empty;
-            byte btindx = 0;
-            string strAllbin = string.Empty;
-
-            for (int i = 0; i < bt.Length; i++)
-            {
-                btindx = bt[i];
-
-                strBin = Convert.ToString(btindx, 2); // Convert from Byte to Bin
-                strBin = strBin.PadLeft(8, '0');  // Zero Pad
-
-                strAllbin += strBin;
-            }
-            b = new BitArray(strAllbin.Select(c => c == '1').ToArray());
-            return b;
-        }
     }
 }

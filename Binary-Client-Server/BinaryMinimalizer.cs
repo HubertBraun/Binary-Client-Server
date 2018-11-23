@@ -10,15 +10,13 @@ namespace Binary_Client_Server
     static class BinaryMinimalizer
     {
 
-
-
-        static public BitArray Change(BitArray bits)//zamiana konca na poczatek, reprezentowanie BitArray w czytelnej formie
+        static public BitArray Change(BitArray bits)    // zamiana konca na poczatek, reprezentowanie BitArray w czytelnej formie
         {
             int len = bits.Count;
             BitArray a = new BitArray(bits);
             BitArray b = new BitArray(bits);
 
-            for (int i = 0, j = len - 1; i < len; ++i, --j)
+            for (int i = 0, j = len - 1; i < len; ++i, --j)     // swap ostatniego bitu z pierwszym
             {
                 a[i] = a[i] ^ b[j];
                 b[j] = a[i] ^ b[j];
@@ -28,11 +26,11 @@ namespace Binary_Client_Server
             return a;
         }
 
-        static public BitArray ReturnMinimalizedTable(int x)//minimalizowanie wielkosci
+        static public BitArray ReturnMinimalizedTable(int x)    // minimalizowanie wielkosci
         {
             BitArray arr = new BitArray(new int[] { x });
             int index = 0;
-            for (int i = arr.Length - 1; i >= 0; i--)
+            for (int i = arr.Length - 1; i >= 0; i--)   // szukanie pierwszego bitu 1
             {
                 if (arr[i] == true)
                 {
@@ -42,38 +40,13 @@ namespace Binary_Client_Server
             }
             index++;
             BitArray toReturn = new BitArray(index);
-            for (int i = index - 1; i >= 0; i--)
+            for (int i = index - 1; i >= 0; i--)    // przepisanie tablicy
             {
                 toReturn[i] = arr[i];
             }
             return Change(toReturn);
 
         }
-
-
-        //public byte[] ToByteArray(BitArray bits)//bity na bajty
-        //{
-        //    int numBytes = bits.Count / 8;
-        //    if (bits.Count % 8 != 0) numBytes++;
-
-        //    byte[] bytes = new byte[numBytes];
-        //    int byteIndex = 0, bitIndex = 0;
-
-        //    for (int i = 0; i < bits.Count; i++)
-        //    {
-        //        if (bits[i])
-        //            bytes[byteIndex] |= (byte)(1 << (7 - bitIndex));
-
-        //        bitIndex++;
-        //        if (bitIndex == 8)
-        //        {
-        //            bitIndex = 0;
-        //            byteIndex++;
-        //        }
-        //    }
-
-        //    return bytes;
-        //}
 
     }
 }

@@ -27,6 +27,7 @@ namespace Binary_Client_Server
                     Segment seg;
                     s.CreateStream();       // utworzenie strumienia
                     s.buffer = new byte[16];         // ustalenie wielkosci bufora
+                    string ErrorInput;      // komunikaty bledow
                     s.Read(ref s.buffer);
                     seg = new Segment(s.buffer);
                     Console.WriteLine("ID otrzymane:\n{0}\n{1}", seg.ReadSegment(), BufferUtilites.ReadBuffer(s.buffer), seg._ByteArray.Length);     // wyswietlenie segmentu
@@ -39,9 +40,10 @@ namespace Binary_Client_Server
                         s.buffer = new byte[16];    //reset buffera
                         s.Read(ref s.buffer);   // odczytanie wiadomosci
                         seg = new Segment(s.buffer);
-                        if (s.CheckExit(seg) == true)
+                        ErrorInput = s.CheckExit(seg);  // sprawdzanie, czy otrzymany segment nie zawiera komunikatu bledu
+                        if (ErrorInput != "")
                         {
-                            Console.WriteLine("EXIT!");
+                            Console.WriteLine(ErrorInput);
                             break;
                         }
                         Console.WriteLine("Segment otrzymany:\n{0}\n{1}", seg.ReadSegment(), BufferUtilites.ReadBuffer(s.buffer), seg._ByteArray.Length);     // wyswietlenie segmentu
